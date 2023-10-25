@@ -4,7 +4,6 @@ from typing import Optional
 from database import Database
 from user import User
 
-
 def handle_client(conn: socket, addr: str):
 	user = None
 
@@ -25,6 +24,10 @@ def main():
 
 if __name__ == "__main__":
 	database = Database("database.db")
+	with open("3_100.jpg","rb") as f:
+		data = f.read()
+	id = database.insert_image(1,data)
 	
-	user: Optional[User] = database.get_user("admin", "1234")
-	print(user)
+	new_image = database.get_image(id)
+	with open("asd.jpg", "wb") as f:
+		f.write(new_image[2])
