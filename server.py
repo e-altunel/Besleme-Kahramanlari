@@ -25,5 +25,6 @@ def main():
 
 if __name__ == "__main__":
 	database = Database("database.db")
+	
 	user: Optional[User] = database.get_user("admin", "1234")
 	print(user)
