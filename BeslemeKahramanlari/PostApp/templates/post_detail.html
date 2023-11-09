@@ -1,8 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+Post Detail
+{% endblock title %}
+
+{% block content %}
 {% if post %}
-	<h1>{{ post.Title }}</h1>
-	<p>{{ post.Content }}</p>
-	<p>{{ post.Date }}</p>
-	<img src ={{ post.Image.url }} />
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+<p>{{ post.user }}</p>
+<img src="{{ post.image.url }}" alt="{{ post.title }}">
+<p>{{ post.date }}</p>
 {% else %}
-	<h1>404</h1>
+<h1>Post not found</h1>
 {% endif %}
+{% endblock content %}
