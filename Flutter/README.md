@@ -2,9 +2,6 @@
 
 A new Flutter project.
 
-* [ ] YEni Özellik
-* [ ] Mahir ÖZellik
-
 ## Getting Started
 
 This project is a starting point for a Flutter application.
