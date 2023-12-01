@@ -60,9 +60,16 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/LilitaOne.ttf
+    - assets/backgroundimage.png
+    - assets/animas.jpg
     - lib/images/beslemekahramanlarilogo.png
     - lib/images/BeslemeHeader.png
     - lib/images/google.png
+  fonts:
+    - family: LilitaOne
+      fonts:
+        - asset: assets/LilitaOne.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
