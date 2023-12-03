@@ -1,34 +1,35 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
-
-
+from django.core.validators import RegexValidator
 class BKManager(UserManager):
-	def _create_user(self, password, **args):
-		user = self.model(**args)
+	def _create_user(self, username, password, **args):
+		user = self.model(username=username, **args)
 		user.set_password(password)
 		user.save(using=self._db)
 		return user
 
-	def create_user(self, password=None, **args):
+	def create_user(self, username, password, **args):
 		args.setdefault('is_superuser', False)
 		args.setdefault('is_staff', False)
-		return self._create_user(password, **args)
+		return self._create_user(username=username, password=password, **args)
 
-	def create_superuser(self, password, **args):
+	def create_superuser(self, username, password, **args):
 		args.setdefault('is_superuser', True)
 		args.setdefault('is_staff', True)
-		return self._create_user(password, **args)
+		return self._create_user(username=username, password=password, **args)
 
 
 class BeslemeKahramani(AbstractUser, PermissionsMixin):
-	# Basic User Fields
-	userid = models.AutoField(primary_key=True)
+	profile_picture = models.ImageField(
+		upload_to='profile_pictures', blank=True, null=True, default=None)
 	username = models.CharField(
 		max_length=50, unique=True, blank=False, null=False, db_index=True)
 	name = models.CharField(max_length=50, blank=True, null=True, default=None)
 	last_name = models.CharField(
 		max_length=50, blank=True, null=True, default=None)
-	phone = models.CharField(max_length=20, blank=True, null=True, default=None)
+	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$')
+	phone = models.CharField(
+		validators=[phone_regex, ], max_length=17, blank=True, null=True, default=None, unique=True)
 	email = models.EmailField(unique=True, blank=True, null=True, default=None)
 
 	# Permissions
@@ -48,12 +49,5 @@ class BeslemeKahramani(AbstractUser, PermissionsMixin):
 	USERNAME_FIELD = 'username'
 	REQUIRED_FIELDS = []
 
-	class Meta:
-		verbose_name = 'Besleme Kahramani'
-		verbose_name_plural = 'Besleme Kahramanlari'
-
-	def get_full_name(self) -> str:
-		return f'{self.name} {self.last_name}'
-
-	def get_short_name(self) -> str:
+	def __str__(self):
 		return self.username
