@@ -63,9 +63,11 @@ flutter:
     - assets/LilitaOne.ttf
     - assets/backgroundimage.png
     - assets/animas.jpg
+    - assets/pp.jpg
     - lib/images/beslemekahramanlarilogo.png
     - lib/images/BeslemeHeader.png
     - lib/images/google.png
+
   fonts:
     - family: LilitaOne
       fonts:
