@@ -1,0 +1,38 @@
+{% extends "AdminPanel/base.html" %} {% block body %}
+	<a href="{% url 'users_add' %}" class="btn btn-primary">Add</a>
+<table class="table table-light table-striped table-hover">
+    {% if table_data %}
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Food Amount</th>
+      <th>Created At</th>
+      <th>Actions</th>
+    </tr>
+    {% for user in table_data %}
+    <tr>
+      <th scope="row">{{ user.id }}</th>
+      <td>{{ user.name }}</td>
+      <td>{{ user.food_amount }}</td>
+      <td>{{ user.created_at }}</td>
+      <td>
+        <div class="btn-group" role="group">
+          <a
+            href="{% url 'users_edit' user.id %}"
+            class="btn btn-primary"
+            >Edit</a
+          >
+		  <a
+			href="{% url 'users_delete' user.id %}"
+			class="btn btn-danger"
+			>Delete</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %} {% else %}
+    <tr>
+      <td colspan="3">No data</td>
+    </tr>
+    {% endif %}
+  </table>
+{% endblock %}

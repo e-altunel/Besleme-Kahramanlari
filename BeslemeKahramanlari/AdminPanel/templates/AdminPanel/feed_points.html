@@ -1,0 +1,38 @@
+{% extends "AdminPanel/base.html" %} {% block body %}
+	<a href="{% url 'feed_points_add' %}" class="btn btn-primary">Add</a>
+<table class="table table-light table-striped table-hover">
+    {% if table_data %}
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Food Amount</th>
+      <th>Created At</th>
+      <th>Actions</th>
+    </tr>
+    {% for feed_point in table_data %}
+    <tr>
+      <th scope="row">{{ feed_point.id }}</th>
+      <td>{{ feed_point.name }}</td>
+      <td>{{ feed_point.food_amount }}</td>
+      <td>{{ feed_point.created_at }}</td>
+      <td>
+        <div class="btn-group" role="group">
+          <a
+            href="{% url 'feed_points_edit' feed_point.id %}"
+            class="btn btn-primary"
+            >Edit</a
+          >
+		  <a
+			href="{% url 'feed_points_delete' feed_point.id %}"
+			class="btn btn-danger"
+			>Delete</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %} {% else %}
+    <tr>
+      <td colspan="3">No data</td>
+    </tr>
+    {% endif %}
+  </table>
+{% endblock %}

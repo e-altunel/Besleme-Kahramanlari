@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BeslemeKahramani
+from .models import *
 from django.contrib.auth.admin import UserAdmin
 
 
@@ -29,3 +29,4 @@ class BeslemeKahramaniConfig(UserAdmin):
 
 
 admin.site.register(BeslemeKahramani, BeslemeKahramaniConfig)
+admin.site.register(FeedPoint)

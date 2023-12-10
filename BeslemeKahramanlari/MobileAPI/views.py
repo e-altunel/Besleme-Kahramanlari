@@ -1,13 +1,11 @@
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.status import *
-from .serializers import UserSerializer
+from .serializers import *
 from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
-from .models import BeslemeKahramani as User
+from .models import BeslemeKahramani as User, Post
 from rest_framework.authentication import TokenAuthentication
-from django.contrib.auth.decorators import user_passes_test
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 @api_view(['POST'])
@@ -36,13 +34,50 @@ def register(request):
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
-def delete_user(request):
-	request_user = request.user
-	if not request_user.is_superuser:
-		return Response({'error': 'You are not authorized to delete users'}, status=HTTP_401_UNAUTHORIZED)
-	username = request.data.get('username')
-	if not username:
-		return Response({'error': 'Username not provided'}, status=HTTP_400_BAD_REQUEST)
-	user = get_object_or_404(User, username=username)
-	user.delete()
-	return Response({'message': 'User deleted successfully'})
+@permission_classes([IsAuthenticated])
+def logout(request):
+	request.user.auth_token.delete()
+	return Response(status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def share_post(request):
+	pass
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_posts(request):
+	posts_serial = PostSerializer(
+		instance=Post.objects.order_by('-created_at')[:10], many=True)
+	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_post(request, post_id):
+	post_serial = PostSerializer(instance=get_object_or_404(Post, id=post_id))
+	return Response({'post': post_serial.data}, status=HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_food_points(request):
+	latitude = request.data.get('latitude')
+	longitude = request.data.get('longitude')
+
+	if latitude is None or longitude is None:
+		return Response({'error': 'Latitude or Longitude is missing'}, status=HTTP_400_BAD_REQUEST)
+
+	food_points = FoodPoint.objects.all()
+	food_points.filter(latitude__gte=latitude-0.1, latitude__lte=latitude +
+	                   0.1).filter(longitude__gte=longitude-0.1, longitude__lte=longitude+0.1)
+	if food_points.count() == 0:
+		return Response({'error': 'No Food Points Found'}, status=HTTP_404_NOT_FOUND)
+	food_points_serial = FoodPointSerializer(instance=food_points, many=True)
+	return Response({'food_points': food_points_serial.data}, status=HTTP_200_OK)

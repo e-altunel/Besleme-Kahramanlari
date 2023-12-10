@@ -51,3 +51,28 @@ class BeslemeKahramani(AbstractUser, PermissionsMixin):
 
 	def __str__(self):
 		return self.username
+
+
+class FeedPoint(models.Model):
+	name = models.CharField(max_length=50, blank=False, null=False)
+	latitude = models.FloatField(blank=False, null=False)
+	longitude = models.FloatField(blank=False, null=False)
+	food_amount = models.FloatField(default=0)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return "{} - {}".format(self.name, self.food_amount)
+
+
+class Post(models.Model):
+	user = models.ForeignKey(BeslemeKahramani, on_delete=models.CASCADE)
+	description = models.TextField(blank=False, null=False)
+	image = models.ImageField(
+		upload_to='posts', blank=True, null=True, default=None)
+	created_at = models.DateTimeField(auto_now_add=True)
+	food_amount = models.FloatField(default=0)
+	feed_point = models.ForeignKey(FeedPoint, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return "{} - {}".format(self.feed_point, self.user.username)
