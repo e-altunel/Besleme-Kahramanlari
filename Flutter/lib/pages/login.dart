@@ -13,95 +13,79 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        body: SafeArea(
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Center(
-                  child: Image.asset(
-                    "lib/images/BeslemeHeader.png",
-                    height: 56,
+        body: Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage('assets/animas.jpg'),
+        fit: BoxFit.cover,
+      )),
+      child: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Center(
+                child: Text(
+                  'Besleme Kahramanlari',
+                  style: TextStyle(
+                    fontFamily: 'LilitaOne',
+                    fontSize: 40,
+                    color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 30),
-                const Icon(
-                  Icons.lock,
-                  size: 100,
-                ),
-                const SizedBox(height: 30),
-                const Text("Welcome Back",
-                    style: TextStyle(color: Colors.grey, fontSize: 16)),
-                const SizedBox(height: 25),
-                MyTextField(
-                  controller: usernameController,
-                  hintText: "Username",
-                  obscureText: false,
-                ),
-                const SizedBox(height: 10),
-                MyTextField(
-                  controller: passwordController,
-                  hintText: "Password",
-                  obscureText: true,
-                ),
-                const SizedBox(height: 10),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                MyButton(onTap: SignUserIn),
-                const SizedBox(height: 10),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Text("Or Continue with"),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Center(
-                  child: Image.asset(
-                    "lib/images/google.png",
-                    height: 56,
-                  ),
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              const SizedBox(height: 30),
+              const Icon(
+                Icons.pets,
+                color: Colors.red,
+                size: 100,
+              ),
+              const SizedBox(height: 30),
+              const Text("Welcome Back",
+                  style: TextStyle(color: Colors.grey, fontSize: 16)),
+              const SizedBox(height: 25),
+              MyTextField(
+                controller: usernameController,
+                hintText: "Username",
+                obscureText: false,
+              ),
+              const SizedBox(height: 10),
+              MyTextField(
+                controller: passwordController,
+                hintText: "Password",
+                obscureText: true,
+              ),
+              const SizedBox(height: 10),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text("Don't have an account?"),
-                    SizedBox(width: 5),
                     Text(
-                      "Sign Up",
-                      style: TextStyle(color: Colors.blue),
+                      "Forgot Password?",
+                      style: TextStyle(color: Colors.grey),
                     ),
                   ],
-                )
-              ],
-            ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              MyButton(onTap: SignUserIn),
+              const SizedBox(height: 20),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Don't have an account?"),
+                  SizedBox(width: 5),
+                  Text(
+                    "Sign Up",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ],
+              )
+            ],
           ),
-        ));
+        ),
+      ),
+    ));
   }
 }
