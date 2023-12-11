@@ -1,4 +1,6 @@
 {% extends "AdminPanel/base.html" %} {% block body %}
+
+	<h1 class="text-center"> Feed Points </h1>
 	<a href="{% url 'feed_points_add' %}" class="btn btn-primary">Add</a>
 <table class="table table-light table-striped table-hover">
     {% if table_data %}

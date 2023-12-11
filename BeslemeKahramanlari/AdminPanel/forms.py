@@ -1,7 +1,6 @@
 from django import forms
 from MobileAPI.models import *
 
-
 class FeedPointForm(forms.ModelForm):
 	class Meta:
 		model = FeedPoint

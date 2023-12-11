@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 @api_view(['POST'])
 def login(request):
 	user = get_object_or_404(User, username=request.data['username'])
-	if not user.check_password(request.data['password']):
+	if user is None or not user.check_password(request.data['password']) or not user.is_active:
 		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	else:
 		token, _ = Token.objects.get_or_create(user=user)
