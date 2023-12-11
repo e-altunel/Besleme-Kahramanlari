@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+{% for post in posts %}
+<div class="post">
+	<h2>{{ post.title }}</a></h2>
+	<p class="meta">Posted by {{ post.user.username }}</p>
+	<p>{{ post.body }}</p>
+	<img src="{{ post.image.url }}" alt="post image">
+	<p>{{ post.date }}</p>
+	{% if user.is_staff or user == post.user %}
+		<form method="POST">
+			{% csrf_token %}
+			<button type="submit" name="delete_post_id" value={{ post.id }}>
+				Delete
+			</button>
+		</form>
+	{% endif %}
+		<form method="POST">
+			{% csrf_token %}
+			<button type="submit" name="report_post_id" value={{ post.id }}>
+				Report
+			</button>
+		</form>
+</div>
+{% endfor %}
+{% endblock content %}
