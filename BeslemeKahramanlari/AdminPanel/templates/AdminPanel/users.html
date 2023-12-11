@@ -1,0 +1,46 @@
+{% extends "AdminPanel/base.html" %} {% block body %}
+<h1 class="text-center">Users</h1>
+<table class="table table-light table-striped table-hover">
+  {% if table_data %}
+  <tr>
+    <th>ID</th>
+    <th>Username</th>
+    <th>Name</th>
+    <th>Contact</th>
+    <th>Rights</th>
+    <th>Joined At</th>
+    <th>Actions</th>
+  </tr>
+  {% for user in table_data %}
+  <tr>
+    <th scope="row">{{ user.id }}</th>
+    <td>{{ user.username }}</td>
+    <td>{{ user.name }}</td>
+    <td>
+		{% if user.phone != none %} {{user.phone}} {% else %} {{user.email}} {% endif %}
+    </td>
+    <td>
+      {% if user.is_superuser %}Super{% elif user.is_staff %}Staff{% else %}User{% endif %}
+    </td>
+    <td>{{ user.date_joined }}</td>
+    <td>
+	{% if user.is_superuser != True and user.is_staff != True %}
+	<div class="btn-group" role="group">
+		{% if user.is_active %}
+        <a href="{% url 'users_ban' user.id %}" class="btn btn-danger">Ban</a>
+        {% else %}
+        <a href="{% url 'users_unban' user.id %}" class="btn btn-success"
+		>Unban</a
+        >
+        {% endif %}
+	</div>
+	{% endif %}
+</td>
+  </tr>
+  {% endfor %} {% else %}
+  <tr>
+    <td colspan="3">No data</td>
+  </tr>
+  {% endif %}
+</table>
+{% endblock %}
