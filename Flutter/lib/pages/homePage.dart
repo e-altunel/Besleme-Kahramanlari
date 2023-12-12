@@ -11,8 +11,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   void goProfile(BuildContext context) {
     print("goProfile function called");
-    // Example: Navigating to ProfilePage
-    Navigator.pushReplacement(
+    // Navigating to ProfilePage using Navigator.push
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ProfilePage()),
     );

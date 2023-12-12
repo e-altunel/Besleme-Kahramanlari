@@ -10,10 +10,14 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        leading: CircleAvatar(
-          radius: 20,
-          backgroundImage: AssetImage('assets/backgroundimage.png'),
-        ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         title: Text(
           'Besleme Kahramanlari',
           style: TextStyle(
