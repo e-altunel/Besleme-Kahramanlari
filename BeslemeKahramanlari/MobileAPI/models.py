@@ -20,16 +20,11 @@ class BKManager(UserManager):
 
 
 class BeslemeKahramani(AbstractUser, PermissionsMixin):
-	profile_picture = models.ImageField(
-		upload_to='profile_pictures', blank=True, null=True, default=None)
 	username = models.CharField(
 		max_length=50, unique=True, blank=False, null=False, db_index=True)
 	name = models.CharField(max_length=50, blank=True, null=True, default=None)
 	last_name = models.CharField(
 		max_length=50, blank=True, null=True, default=None)
-	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$')
-	phone = models.CharField(
-		validators=[phone_regex, ], max_length=17, blank=True, null=True, default=None, unique=True)
 	email = models.EmailField(unique=True, blank=True, null=True, default=None)
 
 	# Permissions
@@ -66,13 +61,22 @@ class FeedPoint(models.Model):
 
 
 class Post(models.Model):
-	user = models.ForeignKey(BeslemeKahramani, on_delete=models.CASCADE)
+	user = models.ForeignKey(
+		BeslemeKahramani, on_delete=models.CASCADE, null=True)
 	description = models.TextField(blank=False, null=False)
 	image = models.ImageField(
 		upload_to='posts', blank=True, null=True, default=None)
 	created_at = models.DateTimeField(auto_now_add=True)
 	food_amount = models.FloatField(default=0)
 	feed_point = models.ForeignKey(FeedPoint, on_delete=models.CASCADE)
+	is_active = models.BooleanField(default=True)
 
 	def __str__(self):
 		return "{} - {}".format(self.feed_point, self.user.username)
+
+
+class Report(models.Model):
+	reporter = models.ForeignKey(BeslemeKahramani, on_delete=models.CASCADE)
+	post = models.ForeignKey(Post, on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+	is_active = models.BooleanField(default=True)

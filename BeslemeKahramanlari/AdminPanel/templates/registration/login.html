@@ -13,11 +13,16 @@
         <img src="{% static "AdminPanel/logo.png" %}" id="logo">
     </div>
     <div id = "box">
+		{% if form.errors %}
+			<p class="error">Username or password is incorrect</p>
+		{% endif %}
         <form method="post">
             {% csrf_token %}
-			<input type="text" name="username" placeholder="Kullanıcı Adı" class="input">
-			<input type="password" name="password" placeholder="Şifre" class="input">
-			<input type="submit" value="Giriş Yap" class="button">
+			<p class = "loginpart">Username: 
+			{{ form.username }}
+            <p class = "loginpart">Password: 
+			{{ form.password }}
+            <input class="btn" type="submit" value="Login">
         </form>
     </div>
 </body>

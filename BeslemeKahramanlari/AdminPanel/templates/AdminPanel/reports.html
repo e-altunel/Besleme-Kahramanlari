@@ -1,0 +1,31 @@
+{% extends "AdminPanel/base.html" %} {% block body %}
+
+	<h1 class="text-center"> Reports </h1>
+<table class="table table-light table-striped table-hover">
+    {% if table_data %}
+    <tr>
+      <th>Date</th>
+      <th>Reporter</th>
+	  <th>Actions</th>
+    </tr>
+    {% for report in table_data %}
+    <tr>
+      <th scope="row">{{ report.id }}</th>
+      <td>{{ report.created_at }}</td>
+      <td>{{ report.reporter }}</td>
+      <td>
+        <div class="btn-group" role="group">
+          <a
+            href="{% url 'reports_view' report.id %}"
+            class="btn btn-primary"
+            >View</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %} {% else %}
+    <tr>
+      <td colspan="3">No data</td>
+    </tr>
+    {% endif %}
+  </table>
+{% endblock %}
