@@ -1,3 +1,4 @@
+import 'package:beslemekahramanlari/pages/homePage.dart';
 import "package:flutter/material.dart";
 import '../components/my_textfield.dart';
 import '../components/my_button.dart';
@@ -9,7 +10,16 @@ class LoginPage extends StatelessWidget {
   final passwordController = TextEditingController();
 
   // sign user in
-  void SignUserIn() {}
+  void SignUserIn(BuildContext context) {
+    // Perform any authentication logic here
+    print("SignUserIn function called");
+    // Example: Navigating to HomePage
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MyHomePage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +79,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              MyButton(onTap: SignUserIn),
+              MyButton(onTap: () => SignUserIn(context)),
               const SizedBox(height: 20),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
