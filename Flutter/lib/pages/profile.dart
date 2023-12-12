@@ -15,13 +15,14 @@ class ProfilePage extends StatelessWidget {
           backgroundImage: AssetImage('assets/backgroundimage.png'),
         ),
         title: Text(
-          '    Besleme Kahramanlari',
+          'Besleme Kahramanlari',
           style: TextStyle(
             fontFamily: 'LilitaOne',
             fontSize: 25,
             color: Colors.white,
           ),
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(
