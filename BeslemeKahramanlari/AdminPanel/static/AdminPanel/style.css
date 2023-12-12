@@ -41,7 +41,12 @@
 	color: white;
 }
 
-.inp {
+.error {
+	color: white;
+	font-size: 18px;
+}
+
+input {
 	border: transparent solid 2px;
 	border-radius: 10px;
 	margin-bottom: 20px;

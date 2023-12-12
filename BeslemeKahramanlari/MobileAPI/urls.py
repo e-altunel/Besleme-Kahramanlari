@@ -8,5 +8,7 @@ urlpatterns = [
 	path('share-post', views.share_post),
 	path('get-posts', views.get_posts),
 	path('get-post/<int:post_id>', views.get_post),
-	path('get-food-points', views.get_food_points),
+	path('get-feed-points', views.get_feed_points),
+	path('share-post', views.share_post),
+	path('report-post', views.report_post),
 ]

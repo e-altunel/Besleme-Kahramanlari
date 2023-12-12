@@ -13,10 +13,10 @@
     <div id = "sidebar">
         <img src={% static "AdminPanel/logo.png" %} id="logo">
         <ul id="datatypes">
-            <li class="dtl"><a href="users">Users</a></li>
-            <li class="dtl"><a href="reports">Reports</a></li>
-            <li class="dtl"><a href="posts">Posts</a></li>
-            <li class="dtl"><a href="feed_points">Feed Points</a></li>
+            <li class="dtl"><a href="{% url 'users' %}">Users</a></li>
+            <li class="dtl"><a href="{% url 'reports' %}">Reports</a></li>
+            <li class="dtl"><a href="{% url 'posts' %}">Posts</a></li>
+            <li class="dtl"><a href="{% url 'feed_points' %}">Feed Points</a></li>
         </ul>
     </div>
 	<div id="tables">

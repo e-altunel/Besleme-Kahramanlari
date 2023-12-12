@@ -67,17 +67,44 @@ def get_post(request, post_id):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_food_points(request):
+def get_feed_points(request):
 	latitude = request.data.get('latitude')
 	longitude = request.data.get('longitude')
 
 	if latitude is None or longitude is None:
 		return Response({'error': 'Latitude or Longitude is missing'}, status=HTTP_400_BAD_REQUEST)
 
-	food_points = FoodPoint.objects.all()
-	food_points.filter(latitude__gte=latitude-0.1, latitude__lte=latitude +
+	feed_points = FeedPoint.objects.all()
+	feed_points.filter(latitude__gte=latitude-0.1, latitude__lte=latitude +
 	                   0.1).filter(longitude__gte=longitude-0.1, longitude__lte=longitude+0.1)
-	if food_points.count() == 0:
-		return Response({'error': 'No Food Points Found'}, status=HTTP_404_NOT_FOUND)
-	food_points_serial = FoodPointSerializer(instance=food_points, many=True)
-	return Response({'food_points': food_points_serial.data}, status=HTTP_200_OK)
+	if feed_points.count() == 0:
+		return Response({'error': 'No Feed Points Found'}, status=HTTP_404_NOT_FOUND)
+	feed_points_serial = FeedPointSerializer(instance=feed_points, many=True)
+	return Response({'feed_points': feed_points_serial.data}, status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def share_post(request):
+	serializer = PostSerializer(data=request.data)
+	if serializer.is_valid():
+		post = serializer.save()
+		post.user = request.user
+		post.save()
+		return Response({'post': serializer.data}, status=HTTP_200_OK)
+	else:
+		print(serializer.errors)
+		return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def report_post(request):
+	post = get_object_or_404(Post, id=request.data['post_id'])
+	if post is None or not post.is_active:
+		return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
+	report = Report.objects.create(post=post, reporter=request.user)
+	report.save()
+	return Response(status=HTTP_200_OK)

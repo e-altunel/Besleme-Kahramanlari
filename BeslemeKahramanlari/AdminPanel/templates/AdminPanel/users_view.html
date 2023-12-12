@@ -1,0 +1,14 @@
+{% extends "AdminPanel/base.html" %}
+
+{% block body %}
+	<form method="POST">
+		{% csrf_token %}
+		<a href="{% url 'users' %}" class="btn-close"></a>
+		<h1> User View </h1>
+		<div class="mb3">
+			<label for="id_name" class="form-label">Name {{ user.name }}</label>
+			<label for="id_name" class="form-label">Username {{ user.username }}</label>
+			<label for="id_email" class="form-label">Email {{ user.email }}</label>
+		</div>
+	</form>
+{% endblock  %}

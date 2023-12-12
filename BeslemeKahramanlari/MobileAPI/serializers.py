@@ -5,7 +5,7 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = BeslemeKahramani
-		fields = ('username', 'password', 'phone')
+		fields = ('username', 'password', 'email')
 
 
 class FeedPointSerializer(serializers.ModelSerializer):
@@ -17,4 +17,4 @@ class FeedPointSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Post
-		fields = ('user', 'description', 'image', 'food_amount', 'food_point')
+		fields = ('image', 'food_amount', 'feed_point')
