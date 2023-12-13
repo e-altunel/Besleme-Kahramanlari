@@ -18,6 +18,15 @@ class _previewPageState extends State<previewPage> {
     
     return Scaffold(
       body: Stack (children: [
+              Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: const AssetImage('assets/animas.jpg'),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
+                  ),
+                ),
+              ),
               Positioned(
                 top: 0,
                 left: 0,

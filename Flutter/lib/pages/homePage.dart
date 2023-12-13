@@ -17,7 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // List of pages
   final List<Widget> _pages = [
     NearestLocationsPage(),
-    MapPage(),
+    mapPage(),
     DiscoverPage(),
   ];
 
