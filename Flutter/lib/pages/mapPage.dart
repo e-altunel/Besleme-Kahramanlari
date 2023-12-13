@@ -1,8 +1,6 @@
-import 'dart:html';
 import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:ui' as ui;
 import 'package:image_picker/image_picker.dart';
 
 class mapPage extends StatefulWidget {
@@ -17,7 +15,7 @@ class _mapPageState extends State<mapPage> {
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   Location _locationController = new Location();
   LatLng? _currentP = null;
-
+  XFile? pickedFile;
   @override
   void initState(){
     addCustomIcon();
@@ -26,10 +24,10 @@ class _mapPageState extends State<mapPage> {
   }
 
     Future<void> openCamera() async {
-      final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+      pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
         // Do something with the picked image file
-        print("Image picked from camera: ${pickedFile.path}");
+        print("Image picked");
       }
   }
 
@@ -117,67 +115,6 @@ class _mapPageState extends State<mapPage> {
             ),
           ),
         ]
-      ),
-      appBar: AppBar(
-        title: const Text("Besleme Kahramanları"),
-        centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.person))],
-        backgroundColor: const Color.fromARGB(255, 252, 81, 2),
-        leading: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundImage: AssetImage(
-                "lib/images/beslemekahramanlarilogo.png"), // Resim dosyanızın yolunu belirtin
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          children: [
-            const Spacer(),
-            IconButton(
-                onPressed: () {
-                  setState(
-                    () {
-                      currentPage = 1;
-                    },
-                  );
-                },
-                icon: Icon(Icons.location_pin,
-                    color: currentPage == 1
-                        ? const Color.fromARGB(255, 245, 59, 2)
-                        : const Color.fromARGB(255, 0, 0, 0))),
-            const Spacer(),
-            IconButton(
-                onPressed: () {
-                  setState(
-                    () {
-                      currentPage = 0;
-                    },
-                  );
-                },
-                icon: Icon(Icons.maps_home_work_sharp,
-                    color: currentPage == 0
-                        ? const Color.fromARGB(255, 245, 59, 2)
-                        : const Color.fromARGB(255, 0, 0, 0))),
-            const Spacer(),
-            IconButton(
-                onPressed: () {
-                  setState(
-                    () {
-                      currentPage = 2;
-                    },
-                  );
-                },
-                icon: Icon(
-                  Icons.search,
-                  color: currentPage == 2
-                      ? const Color.fromARGB(255, 245, 59, 2)
-                      : const Color.fromARGB(255, 0, 0, 0),
-                )),
-            const Spacer(),
-          ],
-        ),
       ),
     );
   }
