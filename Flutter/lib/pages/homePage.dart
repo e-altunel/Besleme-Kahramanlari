@@ -16,9 +16,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // List of pages
   final List<Widget> _pages = [
-    MapPage(), // Replace with your MapPage widget
-    DiscoverPage(), // Replace with your DiscoverPage widget
-    NearestLocationsPage(), // Replace with your NearestLocationsPage widget
+    NearestLocationsPage(),
+    MapPage(),
+    DiscoverPage(),
   ];
 
   void goProfile(BuildContext context) {
@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               icon: Icon(
-                Icons.map,
+                Icons.sort,
                 color: currentPage == 0
                     ? const Color.fromARGB(255, 245, 59, 2)
                     : const Color.fromARGB(255, 0, 0, 0),
