@@ -5,7 +5,6 @@ import 'package:beslemekahramanlari/pages/splash.dart';
 import 'package:beslemekahramanlari/pages/homePage.dart';
 import 'package:beslemekahramanlari/pages/previewPage.dart';
 import 'package:flutter/material.dart';
-import 'pages/login.dart';
 
 void main() {
   runApp(const MyApp());
