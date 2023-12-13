@@ -7,5 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
    	path('api/', include('MobileAPI.urls')),
    	path('panel/', include('AdminPanel.urls')),
-   	path('accounts/', include('django.contrib.auth.urls')),
+   	path('accounts/', include('django.contrib.auth.urls'), name='login'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

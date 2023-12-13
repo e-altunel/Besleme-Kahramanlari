@@ -19,9 +19,31 @@
             <li class="dtl"><a href="{% url 'feed_points' %}">Feed Points</a></li>
         </ul>
     </div>
+	<div class="messages" id="messages">
+	{% if messages %}
+		{% for message in messages %}
+			<div class="alert alert-{{ message.tags }}">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endif %}
+	</div>
 	<div id="tables">
 		{% block body %}
 		{% endblock body %}
 	</div>
+	<script>
+		const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+		async function hideMessages() {
+		  await sleep(3000);
+		
+		  var floatingDiv = document.getElementById('messages');
+		  floatingDiv.style.display = 'none';
+		}
+
+		hideMessages();
+
+  </script>
 </body>
 </html>

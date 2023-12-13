@@ -2,9 +2,13 @@ from django.shortcuts import render, redirect
 from MobileAPI.models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
+
+# region Admin Panel Views
+# region Feed Points Views
 
 
-@login_required(login_url='login')
+@login_required
 @user_passes_test(lambda u: u.is_staff)
 def feed_points(request):
 	feed_points = FeedPoint.objects.all()
@@ -12,21 +16,40 @@ def feed_points(request):
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def feed_points_edit(request, id):
-	feed_point = FeedPoint.objects.get(id=id)
+	try:
+		feed_point = FeedPoint.objects.get(id=id)
+	except FeedPoint.DoesNotExist:
+		messages.error(request, "Feed Point not found")
+		return redirect('feed_points')
 	if request.method == 'POST':
 		form = FeedPointForm(request.POST, instance=feed_point)
-		if form.is_valid():
-			form.save()
+		if not form.is_valid():
+			messages.error(request, "Form is not valid")
 			return redirect('feed_points')
+		if not form.has_changed():
+			messages.error(request, "Nothing changed")
+			return redirect('feed_points')
+		if form.cleaned_data.get('food_amount') < 0:
+			messages.error(request, "Food Amount can't be negative")
+			return redirect('feed_points')
+		if form.cleaned_data.get('latitude') < -90 or form.cleaned_data.get('latitude') > 90:
+			messages.error(request, "Latitude must be between -90 and 90")
+			return redirect('feed_points')
+		if form.cleaned_data.get('longitude') < -180 or form.cleaned_data.get('longitude') > 180:
+			messages.error(request, "Longitude must be between -180 and 180")
+			return redirect('feed_points')
+		messages.success(request, "Feed Point updated successfully")
+		form.save()
+		return redirect('feed_points')
 	else:
 		form = FeedPointForm(instance=feed_point)
 	return render(request, 'AdminPanel/feed_points_edit.html', {'form': form, 'feed_point': feed_point})
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def feed_points_delete(request, id):
 	feed_point = FeedPoint.objects.get(id=id)
 	feed_point.delete()
@@ -34,7 +57,7 @@ def feed_points_delete(request, id):
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def feed_points_add(request):
 	if request.method == 'POST':
 		form = FeedPointForm(request.POST)
@@ -46,64 +69,156 @@ def feed_points_add(request):
 	return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 
 
+# endregion
+# region Users Views
+
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def users(request):
 	users = BeslemeKahramani.objects.all()
 	return render(request, 'AdminPanel/users.html', {'table_data': users})
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def users_view(request, id):
-	user = BeslemeKahramani.objects.get(id=id)
+	if not request.user.is_staff:
+		messages.error(request, "You don't have permission to do that")
+		return redirect('users')
+	try:
+		user = BeslemeKahramani.objects.get(id=id)
+	except BeslemeKahramani.DoesNotExist:
+		messages.error(request, "User not found")
+		return redirect('users')
+	if user.is_superuser:
+		messages.error(request, "You can't view superuser")
+		return redirect('users')
 	return render(request, 'AdminPanel/users_view.html', {'user': user})
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def users_ban(request, id):
-	user = BeslemeKahramani.objects.get(id=id)
+	if not request.user.is_staff:
+		messages.error(request, "You don't have permission to do that")
+		return redirect('users')
+	if request.user.id == id:
+		messages.error(request, "You can't ban yourself")
+		return redirect('users')
+	try:
+		user = BeslemeKahramani.objects.get(id=id)
+	except BeslemeKahramani.DoesNotExist:
+		messages.error(request, "User not found")
+		return redirect('users')
+	if user.is_superuser:
+		messages.error(request, "You can't ban superuser")
+		return redirect('users')
+	if user.is_active == False:
+		messages.error(request, "User is already banned")
+		return redirect('users')
+	if user.is_staff and not request.user.is_superuser:
+		messages.error(request, "You can't ban staff")
+		return redirect('users')
 	user.is_active = False
 	user.save()
+	messages.success(request, "User is banned now")
 	return redirect('users')
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def users_unban(request, id):
-	user = BeslemeKahramani.objects.get(id=id)
+	if not request.user.is_staff:
+		messages.error(request, "You don't have permission to do that")
+		return redirect('users')
+	if request.user.id == id:
+		messages.error(request, "You can't unban yourself")
+		return redirect('users')
+	try:
+		user = BeslemeKahramani.objects.get(id=id)
+	except BeslemeKahramani.DoesNotExist:
+		messages.error(request, "User not found")
+		return redirect('users')
+	if user.is_superuser:
+		messages.error(request, "You can't unban superuser")
+		return redirect('users')
+	if user.is_active:
+		messages.error(request, "User is not banned")
+		return redirect('users')
+	if user.is_staff and not request.user.is_superuser:
+		messages.error(request, "You can't unban staff")
+		return redirect('users')
 	user.is_active = True
 	user.save()
+	messages.success(request, "User is not banned anymore")
 	return redirect('users')
 
 
 @user_passes_test(lambda u: u.is_superuser)
-@login_required(login_url='login')
+@login_required
 def users_staff(request, id):
-	user = BeslemeKahramani.objects.get(id=id)
+	if not request.user.is_superuser:
+		messages.error(request, "You don't have permission to do that")
+		return redirect('users')
+	if request.user.id == id:
+		messages.error(request, "You can't staff yourself")
+		return redirect('users')
+	try:
+		user = BeslemeKahramani.objects.get(id=id)
+	except BeslemeKahramani.DoesNotExist:
+		messages.error(request, "User not found")
+		return redirect('users')
+	if user.is_active == False:
+		messages.error(request, "You can't staff banned user")
+		return redirect('users')
+	if user.is_superuser:
+		messages.error(request, "You can't staff superuser")
+		return redirect('users')
+	if user.is_staff:
+		messages.error(request, "User is already staff")
+		return redirect('users')
 	user.is_staff = True
 	user.save()
+	messages.success(request, "User is staff now")
 	return redirect('users')
 
 
 @user_passes_test(lambda u: u.is_superuser)
-@login_required(login_url='login')
+@login_required
 def users_unstaff(request, id):
-	user = BeslemeKahramani.objects.get(id=id)
+	if not request.user.is_superuser:
+		messages.error(request, "You don't have permission to do that")
+		return redirect('users')
+	if request.user.id == id:
+		messages.error(request, "You can't unstaff yourself")
+		return redirect('users')
+	try:
+		user = BeslemeKahramani.objects.get(id=id)
+	except BeslemeKahramani.DoesNotExist:
+		messages.error(request, "User not found")
+		return redirect('users')
+	if user.is_superuser:
+		messages.error(request, "You can't unstaff superuser")
+		return redirect('users')
+	if not user.is_staff:
+		messages.error(request, "User is not staff")
+		return redirect('users')
 	user.is_staff = False
 	user.save()
+	messages.success(request, "User is not staff anymore")
 	return redirect('users')
 
+# endregion
+# region Reports Views
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def reports(request):
 	reports = Report.objects.all().filter(is_active=True)
 	return render(request, 'AdminPanel/reports.html', {"table_data": reports})
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def reports_view(request, id):
 	if request.method == 'POST':
 		report = Report.objects.get(id=id)
@@ -115,25 +230,34 @@ def reports_view(request, id):
 	report = Report.objects.get(id=id)
 	return render(request, 'AdminPanel/reports_view.html', {"report": report})
 
+# endregion
+# region Posts Views
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def posts(request):
 	posts = Post.objects.all().filter(is_active=True)
 	return render(request, 'AdminPanel/posts.html', {"table_data": posts})
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def posts_view(request, id):
-	post = Post.objects.get(id=id)
+	try:
+		post = Post.objects.get(id=id)
+	except Post.DoesNotExist:
+		messages.error(request, "Post not found")
+		return redirect('posts')
 	return render(request, 'AdminPanel/posts_view.html', {"post": post})
 
 
 @user_passes_test(lambda u: u.is_staff)
-@login_required(login_url='login')
+@login_required
 def posts_hide(request, id):
 	post = Post.objects.get(id=id)
 	post.is_active = False
 	post.save()
 	return redirect('posts')
+
+# endregion
+# endregion
