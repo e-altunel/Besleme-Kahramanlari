@@ -1,7 +1,6 @@
 __pycache__
 *.db
 .venv
-*.jpg
 .vscode
 *.sqlite3
 *test*
