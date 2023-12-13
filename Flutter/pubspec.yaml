@@ -30,7 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  google_maps_flutter: ^2.5.0
+  google_maps_flutter_web: ^0.5.4+2
+  location: ^5.0.0
+  image_picker: ^1.0.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -62,11 +65,14 @@ flutter:
   assets:
     - assets/LilitaOne.ttf
     - assets/backgroundimage.png
-    - assets/animas.jpg
-    - assets/pp.jpg
+    #- assets/animas.jpg
+    #- assets/pp.jpg
     - lib/images/beslemekahramanlarilogo.png
     - lib/images/BeslemeHeader.png
     - lib/images/google.png
+    - lib/images/loca.png
+    - lib/images/add_marker.png
+    - lib/images/back_icon.png
 
   fonts:
     - family: LilitaOne
