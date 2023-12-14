@@ -53,7 +53,10 @@ def get_posts(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_post(request, post_id):
-	post_serial = PostSerializer(instance=get_object_or_404(Post, id=post_id))
+	post = get_object_or_404(Post, id=post_id)
+	if post is None or not post.is_active:
+		return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
+	post_serial = PostSerializer(instance=post)
 	return Response({'post': post_serial.data}, status=HTTP_200_OK)
 
 
@@ -101,3 +104,14 @@ def report_post(request):
 	report = Report.objects.create(post=post, reporter=request.user)
 	report.save()
 	return Response(status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_profile(request):
+	user = get_object_or_404(User, id=request.data['user_id'])
+	if user is None or not user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	user_serial = UserSerializer(instance=user)
+	return Response({'user': user_serial.data}, status=HTTP_200_OK)

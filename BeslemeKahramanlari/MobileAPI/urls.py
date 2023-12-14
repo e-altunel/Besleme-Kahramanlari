@@ -10,4 +10,5 @@ urlpatterns = [
 	path('get-post/<int:post_id>', views.get_post),
 	path('get-feed-points', views.get_feed_points),
 	path('report-post', views.report_post),
+	path('get-profile', views.get_profile),
 ]
