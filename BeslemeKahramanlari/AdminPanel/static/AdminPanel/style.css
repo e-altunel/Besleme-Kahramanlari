@@ -146,4 +146,5 @@ body {
 	height: 100%;
 	color: whitesmoke;
 	text-align: center;
+	pointer-events: none;
 }

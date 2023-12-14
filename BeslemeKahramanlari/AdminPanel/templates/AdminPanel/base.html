@@ -19,15 +19,15 @@
             <li class="dtl"><a href="{% url 'feed_points' %}">Feed Points</a></li>
         </ul>
     </div>
-	<div class="messages" id="messages">
 	{% if messages %}
+	<div class="messages" id="messages">
 		{% for message in messages %}
 			<div class="alert alert-{{ message.tags }}">
 				{{ message }}
 			</div>
 		{% endfor %}
-	{% endif %}
 	</div>
+	{% endif %}
 	<div id="tables">
 		{% block body %}
 		{% endblock body %}

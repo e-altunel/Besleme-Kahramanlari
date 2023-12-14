@@ -40,13 +40,6 @@ def logout(request):
 	return Response(status=HTTP_200_OK)
 
 
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def share_post(request):
-	pass
-
-
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])

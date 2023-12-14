@@ -51,7 +51,12 @@ def feed_points_edit(request, id):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def feed_points_delete(request, id):
-	feed_point = FeedPoint.objects.get(id=id)
+	try:
+		feed_point = FeedPoint.objects.get(id=id)
+	except FeedPoint.DoesNotExist:
+		messages.error(request, "Feed Point not found")
+		return redirect('feed_points')
+	messages.success(request, "Feed Point deleted successfully")
 	feed_point.delete()
 	return redirect('feed_points')
 
@@ -61,9 +66,21 @@ def feed_points_delete(request, id):
 def feed_points_add(request):
 	if request.method == 'POST':
 		form = FeedPointForm(request.POST)
-		if form.is_valid():
-			form.save()
+		if not form.is_valid():
+			messages.error(request, "Form is not valid")
 			return redirect('feed_points')
+		if form.cleaned_data.get('food_amount') < 0:
+			messages.error(request, "Food Amount can't be negative")
+			return redirect('feed_points')
+		if form.cleaned_data.get('latitude') < -90 or form.cleaned_data.get('latitude') > 90:
+			messages.error(request, "Latitude must be between -90 and 90")
+			return redirect('feed_points')
+		if form.cleaned_data.get('longitude') < -180 or form.cleaned_data.get('longitude') > 180:
+			messages.error(request, "Longitude must be between -180 and 180")
+			return redirect('feed_points')
+		messages.success(request, "Feed Point added successfully")
+		form.save()
+		return redirect('feed_points')
 	else:
 		form = FeedPointForm()
 	return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
@@ -221,13 +238,34 @@ def reports(request):
 @login_required
 def reports_view(request, id):
 	if request.method == 'POST':
-		report = Report.objects.get(id=id)
+		try:
+			report = Report.objects.get(id=id)
+		except Report.DoesNotExist:
+			messages.error(request, "Report not found")
+			return redirect('reports')
+		if not report.is_active:
+			messages.error(request, "Report is already solved")
+			return redirect('reports')
 		report.is_active = False
 		report.save()
+		if not report.post:
+			messages.error(request, "Post not found")
+			return redirect('reports')
+		if not report.post.is_active:
+			messages.error(request, "Post is already hidden")
+			return redirect('reports')
 		report.post.is_active = False
 		report.post.save()
+		messages.success(request, "Report is solved successfully")
 		return redirect('reports')
-	report = Report.objects.get(id=id)
+	try:
+		report = Report.objects.get(id=id)
+	except Report.DoesNotExist:
+		messages.error(request, "Report not found")
+		return redirect('reports')
+	if not report.is_active:
+		messages.error(request, "Report is already solved")
+		return redirect('reports')
 	return render(request, 'AdminPanel/reports_view.html', {"report": report})
 
 # endregion
@@ -248,13 +286,23 @@ def posts_view(request, id):
 	except Post.DoesNotExist:
 		messages.error(request, "Post not found")
 		return redirect('posts')
+	if not post.is_active:
+		messages.error(request, "Post not found")
+		return redirect('posts')
 	return render(request, 'AdminPanel/posts_view.html', {"post": post})
 
 
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def posts_hide(request, id):
-	post = Post.objects.get(id=id)
+	try:
+		post = Post.objects.get(id=id)
+	except Post.DoesNotExist:
+		messages.error(request, "Post not found")
+		return redirect('posts')
+	if not post.is_active:
+		messages.error(request, "Post not found")
+		return redirect('posts')
 	post.is_active = False
 	post.save()
 	return redirect('posts')
