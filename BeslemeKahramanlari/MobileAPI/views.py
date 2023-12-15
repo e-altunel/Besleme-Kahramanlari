@@ -83,6 +83,8 @@ def get_feed_points(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def share_post(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	serializer = PostSerializer(data=request.data)
 	if serializer.is_valid():
 		post = serializer.save()
@@ -98,6 +100,10 @@ def share_post(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def report_post(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	if 'post_id' not in request.data:
+		return Response({'error': 'Post Id is missing'}, status=HTTP_400_BAD_REQUEST)
 	post = get_object_or_404(Post, id=request.data['post_id'])
 	if post is None or not post.is_active:
 		return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
@@ -110,7 +116,10 @@ def report_post(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_profile(request):
-	user = get_object_or_404(User, id=request.data['user_id'])
+	if 'user_id' not in request.data:
+		user = request.user
+	else:
+		user = get_object_or_404(User, id=request.data['user_id'])
 	if user is None or not user.is_active:
 		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	user_serial = UserSerializer(instance=user)
