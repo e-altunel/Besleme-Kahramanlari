@@ -3,8 +3,38 @@ from MobileAPI.models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 
 # region Admin Panel Views
+# region Login View
+
+
+def login_view(request):
+	if request.method == 'POST':
+		username = request.POST.get('username')
+		password = request.POST.get('password')
+		if not username or not password:
+			messages.error(request, "Username or Password is empty")
+			return redirect('login')
+		user = authenticate(username=username, password=password)
+		if user is None or not user.is_active:
+			messages.error(request, "User Not Found")
+			return redirect('login')
+		if request.user.is_authenticated:
+			logout(request)
+		login(request, user)
+		print(request.POST.get('next'))
+		return redirect('feed_points')
+	else:
+		form = LoginForm()
+		return render(request, 'AdminPanel/login.html', {'form': form})
+
+
+def logout_view(request):
+	logout(request)
+	return redirect('login')
+
+# endregion
 # region Feed Points Views
 
 

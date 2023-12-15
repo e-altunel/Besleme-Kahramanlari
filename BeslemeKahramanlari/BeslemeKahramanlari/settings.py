@@ -130,7 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'MobileAPI.BeslemeKahramani'
 STATIC_URL = '/static/'
-LOGIN_URL = '/'
+LOGIN_URL = '/panel/login'
 TEMPLATE_DIRS = (
 	os.path.join(BASE_DIR, 'templates'),
 )
