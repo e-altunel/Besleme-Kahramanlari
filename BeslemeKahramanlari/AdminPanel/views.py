@@ -23,7 +23,9 @@ def login_view(request):
 		if request.user.is_authenticated:
 			logout(request)
 		login(request, user)
-		print(request.POST.get('next'))
+		if not user.is_staff:
+			messages.error(request, "You don't have permission to do that")
+			return redirect('login')
 		return redirect('feed_points')
 	else:
 		form = LoginForm()
@@ -31,7 +33,11 @@ def login_view(request):
 
 
 def logout_view(request):
+	if not request.user.is_authenticated:
+		messages.error(request, "You are not logged in")
+		return redirect('login')
 	logout(request)
+	messages.success(request, "Logged out successfully")
 	return redirect('login')
 
 # endregion
