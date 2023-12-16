@@ -2,8 +2,15 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
+	# redirect to feed_points
+	path('', RedirectView.as_view(url='feed_points')),
+	path('login', views.login_view, name='login'),
+	path('login/', views.login_view),
+	path('logout', views.logout_view, name='logout'),
+	path('logout/', views.logout_view),
 	path('feed_points', views.feed_points, name='feed_points'),
 	path('feed_points_edit/<int:id>', views.feed_points_edit, name='feed_points_edit'),
 	path('feed_points_delete/<int:id>',

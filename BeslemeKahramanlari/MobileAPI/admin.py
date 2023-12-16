@@ -11,7 +11,7 @@ class BeslemeKahramaniConfig(UserAdmin):
 	fieldsets = (
 		(None, {'fields': ('username', 'password')}),
 		('Personal Info', {'fields': (
-			'name', 'last_name', 'email', 'profile_picture')}),
+			'name', 'last_name', 'email')}),
 		('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser')}),
 		('Dates', {'fields': ('date_joined', 'date_last_login')}),
 		('Besleme Kahramani Info', {'fields': ('food_amount',)}),

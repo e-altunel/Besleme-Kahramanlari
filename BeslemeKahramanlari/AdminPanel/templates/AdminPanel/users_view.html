@@ -5,10 +5,15 @@
 		{% csrf_token %}
 		<a href="{% url 'users' %}" class="btn-close"></a>
 		<h1> User View </h1>
-		<div class="mb3">
-			<label for="id_name" class="form-label">Name {{ user.name }}</label>
-			<label for="id_name" class="form-label">Username {{ user.username }}</label>
-			<label for="id_email" class="form-label">Email {{ user.email }}</label>
+		<div class="form-group">
+			<label class="form-label">Name</label>
+			<label class="form-control">{{ user.name }}</label>
+			<label class="form-label">Username</label>
+			<label class="form-control">{{ user.username }}</label>
+			<label class="form-label">Email</label>
+			<label class="form-control">{{ user.email }}</label>
+			<label class="form-label">Food Amount</label>
+			<label class="form-control">{{ user.food_amount }}</label>
 		</div>
 	</form>
 {% endblock  %}

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from django.contrib.messages import constants as messages
 from pathlib import Path
 import os
 
@@ -129,9 +130,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'MobileAPI.BeslemeKahramani'
 STATIC_URL = '/static/'
-LOGIN_URL = '/'
+LOGIN_URL = '/panel/login'
 TEMPLATE_DIRS = (
 	os.path.join(BASE_DIR, 'templates'),
 )
 # FİLE UPLOAD
 MEDIA_URL = '/'
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+   	messages.SUCCESS: 'success',
+}
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}

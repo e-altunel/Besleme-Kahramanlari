@@ -36,23 +36,28 @@ def register(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	if 'token' not in request.data:
+		return Response({'error': 'Token is missing'}, status=HTTP_400_BAD_REQUEST)
+	if request.user.auth_token is not None:
+		return Response({'error': 'User is not logged in'}, status=HTTP_400_BAD_REQUEST)
+	if request.user.auth_token.key != request.data['token']:
+		return Response({'error': 'Token is invalid'}, status=HTTP_400_BAD_REQUEST)
 	request.user.auth_token.delete()
 	return Response(status=HTTP_200_OK)
-
-
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def share_post(request):
-	pass
 
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_posts(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	posts_serial = PostSerializer(
-		instance=Post.objects.order_by('-created_at')[:10], many=True)
+		instance=Post.objects.order_by('-created_at').filter(is_active=True), many=True)
+	if posts_serial is None:
+		return Response({'error': 'Posts Not Found'}, status=HTTP_404_NOT_FOUND)
 	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
 
 
@@ -60,7 +65,14 @@ def get_posts(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_post(request, post_id):
-	post_serial = PostSerializer(instance=get_object_or_404(Post, id=post_id))
+	if 'post_id' not in request.data:
+		return Response({'error': 'Post Id is missing'}, status=HTTP_400_BAD_REQUEST)
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	post = get_object_or_404(Post, id=post_id)
+	if post is None or not post.is_active:
+		return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
+	post_serial = PostSerializer(instance=post)
 	return Response({'post': post_serial.data}, status=HTTP_200_OK)
 
 
@@ -68,6 +80,8 @@ def get_post(request, post_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_feed_points(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	latitude = request.data.get('latitude')
 	longitude = request.data.get('longitude')
 
@@ -87,6 +101,8 @@ def get_feed_points(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def share_post(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	serializer = PostSerializer(data=request.data)
 	if serializer.is_valid():
 		post = serializer.save()
@@ -102,9 +118,27 @@ def share_post(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def report_post(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	if 'post_id' not in request.data:
+		return Response({'error': 'Post Id is missing'}, status=HTTP_400_BAD_REQUEST)
 	post = get_object_or_404(Post, id=request.data['post_id'])
 	if post is None or not post.is_active:
 		return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
 	report = Report.objects.create(post=post, reporter=request.user)
 	report.save()
 	return Response(status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_profile(request):
+	if 'user_id' not in request.data:
+		user = request.user
+	else:
+		user = get_object_or_404(User, id=request.data['user_id'])
+	if user is None or not user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	user_serial = UserSerializer(instance=user)
+	return Response({'user': user_serial.data}, status=HTTP_200_OK)

@@ -3,9 +3,12 @@ from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
+	food_amount = serializers.ReadOnlyField()
+	pk = serializers.ReadOnlyField()
 	class Meta:
 		model = BeslemeKahramani
-		fields = ('username', 'password', 'email')
+		fields = ('username', 'password', 'email',
+		          'food_amount', 'pk', 'first_name', 'last_name')
 
 
 class FeedPointSerializer(serializers.ModelSerializer):

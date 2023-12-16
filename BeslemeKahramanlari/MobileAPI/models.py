@@ -49,7 +49,7 @@ class BeslemeKahramani(AbstractUser, PermissionsMixin):
 
 
 class FeedPoint(models.Model):
-	name = models.CharField(max_length=50, blank=False, null=False)
+	name = models.CharField(max_length=50, blank=False, null=False, unique=True)
 	latitude = models.FloatField(blank=False, null=False)
 	longitude = models.FloatField(blank=False, null=False)
 	food_amount = models.FloatField(default=0)
@@ -63,7 +63,6 @@ class FeedPoint(models.Model):
 class Post(models.Model):
 	user = models.ForeignKey(
 		BeslemeKahramani, on_delete=models.CASCADE, null=True)
-	description = models.TextField(blank=False, null=False)
 	image = models.ImageField(
 		upload_to='posts', blank=True, null=True, default=None)
 	created_at = models.DateTimeField(auto_now_add=True)
