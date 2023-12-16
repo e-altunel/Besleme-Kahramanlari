@@ -7,7 +7,8 @@ class UserSerializer(serializers.ModelSerializer):
 	pk = serializers.ReadOnlyField()
 	class Meta:
 		model = BeslemeKahramani
-		fields = ('username', 'password', 'email', 'food_amount', 'pk')
+		fields = ('username', 'password', 'email',
+		          'food_amount', 'pk', 'first_name', 'last_name')
 
 
 class FeedPointSerializer(serializers.ModelSerializer):
