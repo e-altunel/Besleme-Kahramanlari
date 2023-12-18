@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import "package:beslemekahramanlari/components/userInfo.dart";
+import "package:beslemekahramanlari/API/api.dart";
 
 class mapPage extends StatefulWidget {
   const mapPage({super.key}); 
@@ -81,10 +82,9 @@ class _mapPageState extends State<mapPage>{
     });
   }
 
-  void getmarkers(BitmapDescriptor markericon) async{
-    var url = Uri.http("127.0.0.1:8080" , "api/get-feed-points");
+  void getmarkers(BitmapDescriptor markericon) async {
     var response = await http.post(
-      url,
+      Uri.parse(url + "get-feed-points"),
       headers: {
         HttpHeaders.authorizationHeader : 'Token ' + UserInfo.token, // user-info token
         HttpHeaders.contentTypeHeader: "application/json"

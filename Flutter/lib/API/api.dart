@@ -3,15 +3,17 @@ import "dart:convert";
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:http/http.dart" as http;
 
-String url = "http://127.0.0.1:8000/api/";
+const String url = "http://127.0.0.1:8000/api/";
 
 class Backend {
-  static Future<http.Response> register(
+  static Future<http.Response> register(String firstName, String lastName,
       String username, String email, String password) {
     return http.post(
       Uri.parse(url + "register"),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{
+        'first_name': firstName,
+        'last_name': lastName,
         'username': username,
         'email': email,
         'password': password,

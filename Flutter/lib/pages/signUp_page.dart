@@ -11,6 +11,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -26,6 +28,19 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            TextField(
+              controller: firstNameController,
+              decoration: InputDecoration(
+                labelText: 'First Name',
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: lastNameController,
+              decoration: InputDecoration(
+                labelText: 'Last Name',
+              ),
+            ),
             TextField(
               controller: emailController,
               decoration: InputDecoration(
@@ -51,6 +66,8 @@ class _SignUpPageState extends State<SignUpPage> {
             ElevatedButton(
               onPressed: () {
                 // Perform signup logic here
+                String firstName = firstNameController.text;
+                String lastName = lastNameController.text;
                 String email = emailController.text;
                 String username = usernameController.text;
                 String password = passwordController.text;
@@ -58,7 +75,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 // You can implement your signup logic here
                 // For now, let's print the values
 
-                final response = Backend.register(username, email, password)
+                final response = Backend.register(
+                        firstName, lastName, username, email, password)
                     .then((response) {
                   if (response.statusCode == 200) {
                     // Başarılı bir response geldiyse JSON'u parse et

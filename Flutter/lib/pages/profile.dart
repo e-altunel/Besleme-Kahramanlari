@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:beslemekahramanlari/components/userInfo.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key});
@@ -75,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     SizedBox(width: 8),
                     Text(
-                      '          #patiDostu01',
+                      '          #' + UserInfo.username,
                       style: TextStyle(
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
@@ -89,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icon(Icons.person, size: 30),
                     SizedBox(width: 8),
                     Text(
-                      'Mahir Kayadelen',
+                      UserInfo.first_name + ' ' + UserInfo.last_name,
                       style: TextStyle(
                         fontSize: 30,
                       ),
@@ -102,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icon(Icons.mail, size: 30, color: Colors.blue),
                     SizedBox(width: 8),
                     Text(
-                      'm.kayadelen@gtu.edu.tr',
+                      UserInfo.email,
                       style: TextStyle(
                         fontSize: 30,
                         color: Colors.blue,
@@ -116,7 +117,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     Icon(Icons.restaurant, size: 30),
                     SizedBox(width: 8),
                     Text(
-                      'Total Feeding: 500 gr.',
+                      'Total Feeding: ' +
+                          UserInfo.food_amount.toString() +
+                          ' gr.',
                       style: TextStyle(
                         fontSize: 30,
                       ),

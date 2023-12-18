@@ -58,6 +58,8 @@ class _LoginPageState extends State<LoginPage> {
           UserInfo.email = userMap["email"].toString();
           UserInfo.password = userMap["password"].toString();
           UserInfo.food_amount = userMap["food_amount"].toString();
+          UserInfo.first_name = userMap["first_name"].toString();
+          UserInfo.last_name = userMap["last_name"].toString();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
