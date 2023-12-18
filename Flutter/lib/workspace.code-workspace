@@ -1,0 +1,9 @@
+{
+	"folders": [],
+	"settings": {
+		"files.associations": {
+			"iostream": "cpp",
+			"ostream": "cpp"
+		}
+	}
+}
