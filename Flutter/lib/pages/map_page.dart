@@ -1,7 +1,13 @@
+import 'dart:html';
+import 'dart:io';
+
 import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import "package:beslemekahramanlari/components/userInfo.dart";
 
 class mapPage extends StatefulWidget {
   const mapPage({super.key}); 
@@ -16,10 +22,14 @@ class _mapPageState extends State<mapPage>{
   Location _locationController = new Location();
   LatLng? _currentP = null;
   XFile? pickedFile;
+  List<Marker> markersList = [];
+
   @override
   void initState(){
-    addCustomIcon();
     super.initState();
+    addCustomIcon().then((_) {
+    getmarkers(markerIcon);
+    });
     getlocationupdates();
   }
 
@@ -31,16 +41,18 @@ class _mapPageState extends State<mapPage>{
       }
   }
 
-  void addCustomIcon() {
-    BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(40,40)), "lib/images/loca.png",)
-        .then(
-      (icon) {
-        setState(() {
-          markerIcon = icon;
-        });
-      },
+  Future<void> addCustomIcon() async {
+    markerIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(40, 40)),
+      "lib/images/loca.png",
     );
+    // Ensure that markerIcon is not null before proceeding
+    if (markerIcon != null) {
+      setState(() {
+        // Update the state only if the markerIcon is successfully loaded
+        markerIcon = markerIcon;
+      });
+    } 
   }
 
   Future<void> getlocationupdates() async{
@@ -69,6 +81,38 @@ class _mapPageState extends State<mapPage>{
     });
   }
 
+  void getmarkers(BitmapDescriptor markericon) async{
+    var url = Uri.http("127.0.0.1:8080" , "api/get-feed-points");
+    var response = await http.post(
+      url,
+      headers: {
+        HttpHeaders.authorizationHeader : 'Token ' + UserInfo.token, // user-info token
+        HttpHeaders.contentTypeHeader: "application/json"
+      },
+      body: jsonEncode(<String, double>{
+        "latitude": _currentP?.latitude ?? 40.0 ,
+        "longitude": _currentP?.longitude ?? 30.0,
+      }
+      )
+    );
+      if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+
+      for (int i=0;i<data['feed_points'].length ;i++){
+        markersList.add(Marker(
+          markerId: MarkerId(data['feed_points'][i]['name']), 
+          icon: markericon, 
+          position: LatLng(data['feed_points'][i]['latitude'], data['feed_points'][i]['longitude']),
+          infoWindow: InfoWindow(
+            title: "Point: " + data['feed_points'][i]['name'],
+            snippet: "Capacity: %" + data['feed_points'][i]['food_amount'].toString()
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,28 +125,12 @@ class _mapPageState extends State<mapPage>{
               target: _pGooglePlex,
               zoom: 13,),
             markers: {
-            Marker(
-              markerId: const MarkerId("_currentlocation"), 
-              icon: BitmapDescriptor.defaultMarker, 
-              position: _currentP!),
-            Marker(
-              markerId: const MarkerId("_sourcelocation"), 
-              icon: markerIcon, 
-              position: _pGooglePlex,
-              infoWindow: const InfoWindow(
-                title: "nokta 1",
-                snippet: "doluluk oranı"
-                ),
+              Marker(
+                markerId: const MarkerId("_currentlocation"), 
+                icon: BitmapDescriptor.defaultMarker, 
+                position: _currentP!
               ),
-            Marker(
-              markerId: const MarkerId("_destionationlocation"), 
-              icon: markerIcon, 
-              position: _pApplePark,
-              infoWindow: const InfoWindow(
-                title: "nokta 2",
-                snippet: "doluluk oranı"
-                ),
-              ),
+              ...markersList,
             },
           ),
           Positioned(
