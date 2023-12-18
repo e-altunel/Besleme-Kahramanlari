@@ -43,6 +43,7 @@ INSTALLED_APPS = [
    	'MobileAPI',
    	'rest_framework',
    	'rest_framework.authtoken',
+   	'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+   	'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'BeslemeKahramanlari.urls'
@@ -146,3 +149,14 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:58005",  # Add the origin of your Flutter app
+]
+
+# Allow credentials (cookies, authorization headers, etc.)
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_HEADERS = True
+
+# Allow all headers
+CORS_ALLOW_ALL_HEADERS = True
