@@ -87,7 +87,6 @@ def feed_points_edit(request, id):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def feed_points_delete(request, id):
-	return
 	try:
 		feed_point = FeedPoint.objects.get(id=id)
 	except FeedPoint.DoesNotExist:
@@ -136,7 +135,6 @@ def users(request):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def users_view(request, id):
-	return
 	if not request.user.is_staff:
 		messages.error(request, "You don't have permission to do that")
 		return redirect('users')
@@ -153,7 +151,6 @@ def users_view(request, id):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def users_ban(request, id):
-	return
 	if not request.user.is_staff:
 		messages.error(request, "You don't have permission to do that")
 		return redirect('users')
@@ -183,7 +180,6 @@ def users_ban(request, id):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def users_unban(request, id):
-	return
 	if not request.user.is_staff:
 		messages.error(request, "You don't have permission to do that")
 		return redirect('users')
@@ -213,7 +209,6 @@ def users_unban(request, id):
 @user_passes_test(lambda u: u.is_superuser)
 @login_required
 def users_staff(request, id):
-	return
 	if not request.user.is_superuser:
 		messages.error(request, "You don't have permission to do that")
 		return redirect('users')
@@ -243,7 +238,6 @@ def users_staff(request, id):
 @user_passes_test(lambda u: u.is_superuser)
 @login_required
 def users_unstaff(request, id):
-	return
 	if not request.user.is_superuser:
 		messages.error(request, "You don't have permission to do that")
 		return redirect('users')
@@ -279,7 +273,6 @@ def reports(request):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def reports_view(request, id):
-	return
 	if request.method == 'POST':
 		try:
 			report = Report.objects.get(id=id)
@@ -324,7 +317,6 @@ def posts(request):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def posts_view(request, id):
-	return
 	try:
 		post = Post.objects.get(id=id)
 	except Post.DoesNotExist:
@@ -339,7 +331,6 @@ def posts_view(request, id):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def posts_hide(request, id):
-	return
 	try:
 		post = Post.objects.get(id=id)
 	except Post.DoesNotExist:
