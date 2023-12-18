@@ -7,14 +7,16 @@ class UserSerializer(serializers.ModelSerializer):
 	pk = serializers.ReadOnlyField()
 	class Meta:
 		model = BeslemeKahramani
-		fields = ('username', 'password', 'email',
-		          'food_amount', 'pk', 'first_name', 'last_name')
+		fields = ('username', 'password', 'email', 'first_name', 'last_name',
+		          'food_amount', 'pk')
 
 
 class FeedPointSerializer(serializers.ModelSerializer):
+	pk = serializers.ReadOnlyField()
+	food_amount = serializers.ReadOnlyField()
 	class Meta:
 		model = FeedPoint
-		fields = ('name', 'latitude', 'longitude')
+		fields = ('name', 'latitude', 'longitude', 'food_amount', 'pk')
 
 
 class PostSerializer(serializers.ModelSerializer):
