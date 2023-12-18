@@ -151,7 +151,7 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:58005",  # Add the origin of your Flutter app
+	'*'
 ]
 
 # Allow credentials (cookies, authorization headers, etc.)

@@ -12,9 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class FeedPointSerializer(serializers.ModelSerializer):
+	pk = serializers.ReadOnlyField()
+	food_amount = serializers.ReadOnlyField()
 	class Meta:
 		model = FeedPoint
-		fields = ('name', 'latitude', 'longitude')
+		fields = ('name', 'latitude', 'longitude', 'food_amount', 'pk')
 
 
 class PostSerializer(serializers.ModelSerializer):
