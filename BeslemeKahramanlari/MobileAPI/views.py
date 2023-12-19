@@ -108,6 +108,10 @@ def share_post(request):
 		post = serializer.save()
 		post.user = request.user
 		post.save()
+		post.user.food_amount += post.food_amount
+		post.user.save()
+		post.feed_point.food_amount += post.food_amount
+		post.feed_point.save()
 		return Response({'post': serializer.data}, status=HTTP_200_OK)
 	else:
 		print(serializer.errors)
