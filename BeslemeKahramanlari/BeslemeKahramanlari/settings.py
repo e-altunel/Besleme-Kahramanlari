@@ -28,14 +28,15 @@ SECRET_KEY = 'django-insecure-d+r0d%!n$m(tmu6fu1m1uz1r4w8^=2y2gf6lh4og*4ayopjudu
 DEBUG = True
 
 ALLOWED_HOSTS = [
-	'https://besleme-kahramani.azurewebsites.net',
-	'http://besleme-kahramani.azurewebsites.net'
+	'*'
 ]
 
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
 	'https://besleme-kahramani.azurewebsites.net',
 	'http://besleme-kahramani.azurewebsites.net'
+	'http://localhost:8080',
+	'http://localhost:8000',
 ]
 # Application definition
 

@@ -69,7 +69,7 @@ def get_posts(request):
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user_post(request):
+def get_user_posts(request):
 	if not request.user or not request.user.is_active:
 		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	posts_serial = PostSerializer(
