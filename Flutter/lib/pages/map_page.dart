@@ -84,7 +84,7 @@ class _mapPageState extends State<mapPage>{
 
   void getmarkers(BitmapDescriptor markericon) async {
     var response = await http.post(
-      Uri.parse(url + "get-feed-points"),
+      Uri.parse(url + "get-feed-points/"),
       headers: {
         HttpHeaders.authorizationHeader : 'Token ' + UserInfo.token, // user-info token
         HttpHeaders.contentTypeHeader: "application/json"

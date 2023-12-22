@@ -3,13 +3,13 @@ import "dart:convert";
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:http/http.dart" as http;
 
-const String url = "http://besleme-kahramani.azurewebsites.net/api/";
+const String url = "http://besleme-kahramani.azurewebsites.net/";
 
 class Backend {
   static Future<http.Response> register(String firstName, String lastName,
       String username, String email, String password) {
     return http.post(
-      Uri.parse(url + "register"),
+      Uri.parse(url + "register/"),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{
         'first_name': firstName,
@@ -23,7 +23,7 @@ class Backend {
 
   static Future<http.Response> login(String username, String password) {
     return http.post(
-      Uri.parse(url + "login"),
+      Uri.parse(url + "login/"),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(<String, String>{
         'username': username,
@@ -34,7 +34,7 @@ class Backend {
 
   static Future<http.Response> get_profile(String username, String password) {
     return http.post(
-      Uri.parse(url + "login"),
+      Uri.parse(url + "login/"),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization': 'Token' + UserInfo.token
