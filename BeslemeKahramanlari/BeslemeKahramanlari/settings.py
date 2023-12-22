@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-d+r0d%!n$m(tmu6fu1m1uz1r4w8^=2y2gf6lh4og*4ayopjudu
 DEBUG = False
 
 ALLOWED_HOSTS = [
-	'besleme-kahramanlari.azurewebsites.net',
+	'*',
 ]
 
 
