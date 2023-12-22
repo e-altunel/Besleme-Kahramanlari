@@ -25,13 +25,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d+r0d%!n$m(tmu6fu1m1uz1r4w8^=2y2gf6lh4og*4ayopjudu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
-	'*',
+	'https://besleme-kahramani.azurewebsites.net',
+	'http://besleme-kahramani.azurewebsites.net'
 ]
 
-
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [
+	'https://besleme-kahramani.azurewebsites.net',
+	'http://besleme-kahramani.azurewebsites.net'
+]
 # Application definition
 
 INSTALLED_APPS = [

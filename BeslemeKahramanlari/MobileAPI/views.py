@@ -60,11 +60,23 @@ def get_posts(request):
 	if not request.user or not request.user.is_active:
 		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	posts_serial = PostSerializer(
-		instance=Post.objects.order_by('-created_at').filter(is_active=True), many=True)
+		instance=Post.objects.order_by('-created_at').filter(is_active=True)[:8], many=True)
 	if posts_serial is None:
 		return Response({'error': 'Posts Not Found'}, status=HTTP_404_NOT_FOUND)
 	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
 
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_post(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	posts_serial = PostSerializer(
+		instance=Post.objects.order_by('-created_at').filter(is_active=True).filter(user_id=request.user.user_id), many=True)
+	if posts_serial is None:
+		return Response({'error': 'Posts Not Found'}, status=HTTP_404_NOT_FOUND)
+	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
