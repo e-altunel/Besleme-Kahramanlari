@@ -53,7 +53,7 @@ def logout(request):
 	return Response(status=HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_posts(request):
@@ -66,7 +66,7 @@ def get_posts(request):
 	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user_posts(request):
@@ -78,7 +78,8 @@ def get_user_posts(request):
 		return Response({'error': 'Posts Not Found'}, status=HTTP_404_NOT_FOUND)
 	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
 
-@api_view(['POST'])
+
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_post(request, post_id):
@@ -93,7 +94,7 @@ def get_post(request, post_id):
 	return Response({'post': post_serial.data}, status=HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_feed_points(request):
