@@ -31,12 +31,13 @@ ALLOWED_HOSTS = [
 	'*'
 ]
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 CSRF_TRUSTED_ORIGINS = [
 	'https://besleme-kahramani.azurewebsites.net',
 	'http://besleme-kahramani.azurewebsites.net'
 	'http://localhost:8080',
 	'http://localhost:8000',
+	'http://159.146.103.199:8000',
 ]
 # Application definition
 
@@ -64,7 +65,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.common.CommonMiddleware',
    	'corsheaders.middleware.CorsMiddleware',
-   	'whitenoise.middleware.WhiteNoiseMiddleware',
+   	# 'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'BeslemeKahramanlari.urls'
@@ -133,11 +134,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -152,7 +153,6 @@ TEMPLATE_DIRS = (
 )
 # FILE UPLOAD
 MEDIA_URL = '/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
