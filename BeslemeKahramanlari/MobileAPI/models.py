@@ -48,8 +48,8 @@ class BeslemeKahramani(AbstractUser, PermissionsMixin):
 		return self.username
 
 	@staticmethod
-	def is_password_valid(self, password: str):
-		if password.count() < 8 or password.count() > 32:
+	def is_password_valid(password: str):
+		if len(password) < 8 or len(password) > 32:
 			return False
 		if password.isalpha():
 			return False
