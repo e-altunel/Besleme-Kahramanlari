@@ -59,23 +59,27 @@ def feed_points_edit(request, id):
 	except FeedPoint.DoesNotExist:
 		messages.error(request, "Feed Point not found")
 		return redirect('feed_points')
+
 	if request.method == 'POST':
 		form = FeedPointForm(request.POST, instance=feed_point)
 		if not form.is_valid():
 			messages.error(request, "Form is not valid")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_edit.html', {'form': form, 'feed_point': feed_point})
 		if not form.has_changed():
 			messages.error(request, "Nothing changed")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_edit.html', {'form': form, 'feed_point': feed_point})
+		if not form.cleaned_data.get('food_amount') and not form.cleaned_data.get('latitude') and not form.cleaned_data.get('longitude'):
+			messages.error(request, "Invalid form")
+			return render(request, 'AdminPanel/feed_points_edit.html', {'form': form, 'feed_point': feed_point})
 		if form.cleaned_data.get('food_amount') < 0:
 			messages.error(request, "Food Amount can't be negative")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_edit.html', {'form': form, 'feed_point': feed_point})
 		if form.cleaned_data.get('latitude') < -90 or form.cleaned_data.get('latitude') > 90:
 			messages.error(request, "Latitude must be between -90 and 90")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_edit.html', {'form': form, 'feed_point': feed_point})
 		if form.cleaned_data.get('longitude') < -180 or form.cleaned_data.get('longitude') > 180:
 			messages.error(request, "Longitude must be between -180 and 180")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_edit.html', {'form': form, 'feed_point': feed_point})
 		messages.success(request, "Feed Point updated successfully")
 		form.save()
 		return redirect('feed_points')
@@ -108,6 +112,9 @@ def feed_points_add(request):
 			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 		if not form.is_valid():
 			messages.error(request, "Form is not valid")
+			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
+		if not form.cleaned_data.get('food_amount') and not form.cleaned_data.get('latitude') and not form.cleaned_data.get('longitude'):
+			messages.error(request, "Invalid form")
 			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 		if form.cleaned_data.get('food_amount') < 0:
 			messages.error(request, "Food Amount can't be negative")
