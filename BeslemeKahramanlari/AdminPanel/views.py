@@ -101,19 +101,23 @@ def feed_points_delete(request, id):
 @login_required
 def feed_points_add(request):
 	if request.method == 'POST':
-		form = FeedPointForm(request.POST)
+		try:
+			form = FeedPointForm(request.POST)
+		except:
+			messages.error(request, "Form is not valid")
+			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 		if not form.is_valid():
 			messages.error(request, "Form is not valid")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 		if form.cleaned_data.get('food_amount') < 0:
 			messages.error(request, "Food Amount can't be negative")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 		if form.cleaned_data.get('latitude') < -90 or form.cleaned_data.get('latitude') > 90:
 			messages.error(request, "Latitude must be between -90 and 90")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 		if form.cleaned_data.get('longitude') < -180 or form.cleaned_data.get('longitude') > 180:
 			messages.error(request, "Longitude must be between -180 and 180")
-			return redirect('feed_points')
+			return render(request, 'AdminPanel/feed_points_add.html', {'form': form})
 		messages.success(request, "Feed Point added successfully")
 		form.save()
 		return redirect('feed_points')
