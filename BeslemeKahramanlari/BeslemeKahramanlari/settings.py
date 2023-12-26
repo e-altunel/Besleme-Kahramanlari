@@ -28,10 +28,17 @@ SECRET_KEY = 'django-insecure-d+r0d%!n$m(tmu6fu1m1uz1r4w8^=2y2gf6lh4og*4ayopjudu
 DEBUG = True
 
 ALLOWED_HOSTS = [
-	"192.168.1.16"
+	'*'
 ]
 
-
+CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+	'https://besleme-kahramani.azurewebsites.net',
+	'http://besleme-kahramani.azurewebsites.net'
+	'http://localhost:8080',
+	'http://localhost:8000',
+	'http://159.146.103.199:8000',
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,8 +63,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-   	'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+   	'corsheaders.middleware.CorsMiddleware',
+   	# 'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'BeslemeKahramanlari.urls'
@@ -126,7 +134,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
+
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -139,8 +151,9 @@ LOGIN_URL = '/panel/login'
 TEMPLATE_DIRS = (
 	os.path.join(BASE_DIR, 'templates'),
 )
-# FİLE UPLOAD
+# FILE UPLOAD
 MEDIA_URL = '/'
+
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
    	messages.SUCCESS: 'success',

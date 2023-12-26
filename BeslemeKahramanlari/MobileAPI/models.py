@@ -47,7 +47,17 @@ class BeslemeKahramani(AbstractUser, PermissionsMixin):
 	def __str__(self):
 		return self.username
 
-
+	@staticmethod
+	def is_password_valid(password: str):
+		if len(password) < 8 or len(password) > 32:
+			return False
+		if password.isalpha():
+			return False
+		if password.isnumeric():
+			return False
+		if password.isalnum():
+			return False
+		return True
 class FeedPoint(models.Model):
 	name = models.CharField(max_length=50, blank=False, null=False, unique=True)
 	latitude = models.FloatField(blank=False, null=False)

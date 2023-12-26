@@ -8,6 +8,7 @@ from .models import BeslemeKahramani as User, Post
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+
 @api_view(['POST'])
 def login(request):
 	user = get_object_or_404(User, username=request.data['username'])
@@ -22,6 +23,10 @@ def login(request):
 @api_view(['POST'])
 def register(request):
 	serializer = UserSerializer(data=request.data)
+	if 'password' not in request.data:
+		return Response({'error': 'Password is missing'}, status=HTTP_400_BAD_REQUEST)
+	if BeslemeKahramani.is_password_valid(request.data['password']):
+		return Response({'error': 'Password is not valid'}, status=HTTP_400_BAD_REQUEST)
 	if serializer.is_valid():
 		user = serializer.save()
 		user.set_password(request.data['password'])
@@ -48,20 +53,33 @@ def logout(request):
 	return Response(status=HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_posts(request):
 	if not request.user or not request.user.is_active:
 		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	posts_serial = PostSerializer(
-		instance=Post.objects.order_by('-created_at').filter(is_active=True), many=True)
+		instance=Post.objects.order_by('-created_at').filter(is_active=True)[:8], many=True)
 	if posts_serial is None:
 		return Response({'error': 'Posts Not Found'}, status=HTTP_404_NOT_FOUND)
 	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_posts(request):
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	posts_serial = PostSerializer(
+		instance=Post.objects.order_by('-created_at').filter(is_active=True).filter(user_id=request.user.user_id), many=True)
+	if posts_serial is None:
+		return Response({'error': 'Posts Not Found'}, status=HTTP_404_NOT_FOUND)
+	return Response({'posts': posts_serial.data}, status=HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_post(request, post_id):
@@ -76,7 +94,7 @@ def get_post(request, post_id):
 	return Response({'post': post_serial.data}, status=HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_feed_points(request):
@@ -146,3 +164,25 @@ def get_profile(request):
 		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
 	user_serial = UserSerializer(instance=user)
 	return Response({'user': user_serial.data}, status=HTTP_200_OK)
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+	old_password = request.data.get('old_password')
+	new_password = request.data.get('new_password')
+	if not request.user or not request.user.is_active:
+		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+	if old_password is None or new_password is None:
+		return Response({'error': 'Old or New Password is missing'}, status=HTTP_400_BAD_REQUEST)
+	if not request.user.check_password(old_password):
+		return Response({'error': 'Old Password is wrong'}, status=HTTP_400_BAD_REQUEST)
+	if old_password == new_password:
+		return Response({'error': 'Old and New Passwords are same'}, status=HTTP_400_BAD_REQUEST)
+	if BeslemeKahramani.is_password_valid(new_password):
+		return Response({'error': 'New Password is not valid'}, status=HTTP_400_BAD_REQUEST)
+	request.user.set_password(new_password)
+	request.user.save()
+	return Response(status=HTTP_200_OK)
+
