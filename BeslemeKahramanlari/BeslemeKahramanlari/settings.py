@@ -37,6 +37,7 @@ CSRF_TRUSTED_ORIGINS = [
 	'http://besleme-kahramani.azurewebsites.net'
 	'http://localhost:8080',
 	'http://localhost:8000',
+	'http://localhost:42218',
 	'http://159.146.103.199:8000',
 ]
 # Application definition
@@ -59,7 +60,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+#    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
