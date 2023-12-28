@@ -12,7 +12,7 @@ class DiscoveryPage extends StatefulWidget {
 
 class _DiscoveryPageState extends State<DiscoveryPage> {
   List<Post> posts = [];
-  final String baseUrl = "http://159.146.103.199:8000";
+  final String baseUrl = Uri.parse(url).origin;
 
   @override
   void initState() {
