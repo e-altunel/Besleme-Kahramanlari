@@ -18,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     NearestLocationsPage(),
     mapPage(),
-    DiscoveryPage(),
+    DiscoverPage(),
   ];
 
   void goProfile(BuildContext context) {

@@ -3,7 +3,7 @@ import "dart:convert";
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:http/http.dart" as http;
 
-const String url = "http://159.146.103.199:8000/api/";
+const String url = "http://besleme-kahramani.azurewebsites.net/";
 
 class Backend {
   static Future<http.Response> register(String firstName, String lastName,
@@ -40,29 +40,6 @@ class Backend {
         'Authorization': 'Token' + UserInfo.token
       },
       body: jsonEncode(<String, String>{'user_id': UserInfo.pk}),
-    );
-  }
-
-  static Future<http.Response> getLatestPosts() {
-    return http.get(
-      Uri.parse(url + "get-posts/"), // Adjust the endpoint as per your API
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Token ' + UserInfo.token,
-      },
-    );
-  }
-
-  static Future<http.Response> reportPost(int postId) {
-    return http.post(
-      Uri.parse(url + "report-post/"), // Adjust the endpoint as per your API
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Token ' + UserInfo.token,
-      },
-      body: jsonEncode(<String, int>{
-        'post_id': postId,
-      }),
     );
   }
 }
