@@ -42,4 +42,27 @@ class Backend {
       body: jsonEncode(<String, String>{'user_id': UserInfo.pk}),
     );
   }
+
+  static Future<http.Response> getLatestPosts() {
+    return http.get(
+      Uri.parse(url + "get-posts/"), // Adjust the endpoint as per your API
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + UserInfo.token,
+      },
+    );
+  }
+
+  static Future<http.Response> reportPost(int postId) {
+    return http.post(
+      Uri.parse(url + "report-post/"), // Adjust the endpoint as per your API
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + UserInfo.token,
+      },
+      body: jsonEncode(<String, int>{
+        'post_id': postId,
+      }),
+    );
+  }
 }
