@@ -1,6 +1,6 @@
 //import 'dart:html';
 import 'dart:io';
-
+import 'dart:async'; // Import Timer
 import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -32,6 +32,9 @@ class _mapPageState extends State<mapPage>{
     getmarkers(markerIcon);
     });
     getlocationupdates();
+    Timer.periodic(Duration(seconds: 10), (timer) {
+      getmarkers(markerIcon);
+    });
   }
 
     Future<void> openCamera() async {
@@ -44,7 +47,7 @@ class _mapPageState extends State<mapPage>{
 
   Future<void> addCustomIcon() async {
     markerIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(40, 40)),
+      const ImageConfiguration(size: Size(10, 10)),
       "lib/images/loca.png",
     );
     // Ensure that markerIcon is not null before proceeding
@@ -83,6 +86,7 @@ class _mapPageState extends State<mapPage>{
   }
 
   void getmarkers(BitmapDescriptor markericon) async {
+    markersList.clear();
     var response = await http.post(
       Uri.parse(url + "get-feed-points/"),
       headers: {
@@ -110,6 +114,7 @@ class _mapPageState extends State<mapPage>{
           ),
         );
       }
+      setState(() {});
     }
   }
 

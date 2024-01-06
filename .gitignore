@@ -1,8 +1,0 @@
-__pycache__
-*.db
-.venv
-.vscode
-*.sqlite3
-*test*
-.coverage
-htmlcov
