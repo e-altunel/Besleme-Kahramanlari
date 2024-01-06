@@ -1,4 +1,5 @@
 import "dart:convert";
+import "dart:io";
 
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:http/http.dart" as http;
@@ -64,5 +65,19 @@ class Backend {
         'post_id': postId,
       }),
     );
+  }
+
+  static Future<http.Response> getNearestLocations(
+      double latitude, double longitude) {
+    return http.post(Uri.parse(url + "get-feed-points/"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              'Token ' + UserInfo.token, // user-info token
+          HttpHeaders.contentTypeHeader: "application/json"
+        },
+        body: jsonEncode(<String, double>{
+          "latitude": latitude,
+          "longitude": longitude,
+        }));
   }
 }
