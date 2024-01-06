@@ -2,6 +2,7 @@ import 'package:beslemekahramanlari/pages/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:beslemekahramanlari/pages/previewPage.dart';
 import 'package:beslemekahramanlari/pages/login.dart';
+import 'package:beslemekahramanlari/pages/map_page.dart';
 
 void main() {
   runApp(const MyApp());

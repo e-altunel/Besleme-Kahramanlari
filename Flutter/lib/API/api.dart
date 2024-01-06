@@ -3,7 +3,7 @@ import "dart:convert";
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:http/http.dart" as http;
 
-const String url = "http://159.146.103.199/api/";
+const String url = "http://159.146.103.199:8000/api/";
 
 class Backend {
   static Future<http.Response> register(String firstName, String lastName,
