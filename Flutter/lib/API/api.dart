@@ -1,9 +1,10 @@
 import "dart:convert";
+import "dart:io";
 
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:http/http.dart" as http;
 
-const String url = "http://159.146.103.199/api/";
+const String url = "http://192.168.1.10:8000/api/";
 
 class Backend {
   static Future<http.Response> register(String firstName, String lastName,
@@ -64,5 +65,19 @@ class Backend {
         'post_id': postId,
       }),
     );
+  }
+
+  static Future<http.Response> getNearestLocations(
+      double latitude, double longitude) {
+    return http.post(Uri.parse(url + "get-feed-points/"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              'Token ' + UserInfo.token, // user-info token
+          HttpHeaders.contentTypeHeader: "application/json"
+        },
+        body: jsonEncode(<String, double>{
+          "latitude": latitude,
+          "longitude": longitude,
+        }));
   }
 }
