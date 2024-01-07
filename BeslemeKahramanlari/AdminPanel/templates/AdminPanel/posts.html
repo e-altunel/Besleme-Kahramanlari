@@ -20,10 +20,17 @@
             href="{% url 'posts_view' post.id %}"
             class="btn btn-primary"
             >View</a>
+			{% if not post.is_active %}
+		  <a
+			href="{% url 'posts_unhide' post.id %}"
+			class="btn btn-success"
+			>Unhide</a>
+			{% else %}
 		  <a
 			href="{% url 'posts_hide' post.id %}"
 			class="btn btn-danger"
 			>Hide</a>
+			{% endif %}
 		  
         </div>
       </td>

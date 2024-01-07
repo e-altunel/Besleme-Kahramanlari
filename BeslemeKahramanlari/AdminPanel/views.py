@@ -315,13 +315,28 @@ def reports_view(request, id):
 		return redirect('reports')
 	return render(request, 'AdminPanel/reports_view.html', {"report": report})
 
+@user_passes_test(lambda u: u.is_staff)
+@login_required
+def reports_delete(request, id):
+	try:
+		report = Report.objects.get(id=id)
+	except Report.DoesNotExist:
+		messages.error(request, "Report not found")
+		return redirect('reports')
+	if not report.is_active:
+		messages.error(request, "Report is already solved")
+		return redirect('reports')
+	report.delete()
+	messages.success(request, "Report is deleted successfully")
+	return redirect('reports')
+
 # endregion
 # region Posts Views
 
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def posts(request):
-	posts = Post.objects.all().filter(is_active=True)
+	posts = Post.objects.all().filter()
 	return render(request, 'AdminPanel/posts.html', {"table_data": posts})
 
 
@@ -352,6 +367,23 @@ def posts_hide(request, id):
 		return redirect('posts')
 	post.is_active = False
 	post.save()
+	messages.success(request, "Post is hidden now")
+	return redirect('posts')
+
+@user_passes_test(lambda u: u.is_staff)
+@login_required
+def posts_unhide(request, id):
+	try:
+		post = Post.objects.get(id=id)
+	except Post.DoesNotExist:
+		messages.error(request, "Post not found")
+		return redirect('posts')
+	if post.is_active:
+		messages.error(request, "Post not found")
+		return redirect('posts')
+	post.is_active = True
+	post.save()
+	messages.success(request, "Post is unhidden now")
 	return redirect('posts')
 
 # endregion

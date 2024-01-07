@@ -20,6 +20,10 @@
             href="{% url 'reports_view' report.id %}"
             class="btn btn-primary"
             >View</a>
+		  <a
+			href="{% url 'reports_delete' report.id %}"
+			class="btn btn-danger"
+			>Delete</a>				  	
         </div>
       </td>
     </tr>

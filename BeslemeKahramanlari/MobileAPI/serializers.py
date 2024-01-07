@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 	pk = serializers.ReadOnlyField()
 	class Meta:
 		model = BeslemeKahramani
-		fields = ('username', 'password', 'email', 'first_name', 'last_name',
+		fields = ('username', 'email', 'first_name', 'last_name',
 		          'food_amount', 'pk')
 
 
@@ -20,6 +20,7 @@ class FeedPointSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
 	class Meta:
 		model = Post
-		fields = ('image', 'food_amount', 'feed_point')
+		fields = ('image', 'food_amount', 'feed_point', 'pk', 'user', 'created_at')

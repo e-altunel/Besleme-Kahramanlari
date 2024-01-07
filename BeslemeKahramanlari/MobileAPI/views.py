@@ -108,7 +108,7 @@ def get_feed_points(request):
 
 	feed_points = FeedPoint.objects.all()
 	feed_points.filter(latitude__gte=latitude-0.1, latitude__lte=latitude +
-	                   0.1).filter(longitude__gte=longitude-0.1, longitude__lte=longitude+0.1)
+					   0.1).filter(longitude__gte=longitude-0.1, longitude__lte=longitude+0.1)
 	if feed_points.count() == 0:
 		return Response({'error': 'No Feed Points Found'}, status=HTTP_404_NOT_FOUND)
 	feed_points_serial = FeedPointSerializer(instance=feed_points, many=True)
@@ -147,6 +147,9 @@ def report_post(request):
 	post = get_object_or_404(Post, id=request.data['post_id'])
 	if post is None or not post.is_active:
 		return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
+	existing_report = Report.objects.filter(post=post, reporter=request.user).exists()
+	if existing_report:
+		return Response({'error': 'Post already reported by the same user'}, status=HTTP_400_BAD_REQUEST)
 	report = Report.objects.create(post=post, reporter=request.user)
 	report.save()
 	return Response(status=HTTP_200_OK)
