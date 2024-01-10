@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:beslemekahramanlari/components/points.dart';
 import 'package:beslemekahramanlari/API/api.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class NearestLocationsPage extends StatefulWidget {
   NearestLocationsPage({Key? key}) : super(key: key);
@@ -50,6 +51,15 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
     }
   }
 
+  Future<void> launchGoogleMaps(double latitude, double longitude) async {
+    final url = 'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude';
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    } else {
+      throw 'Could not launch Google Maps';
+    }
+  }
+
   Widget _buildLocationCard(Point point) {
     final name = point.name;
     final capacity = point.foodAmount.toString() + ' g';
@@ -90,6 +100,7 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
+                launchGoogleMaps(point.latitude, point.longitude);
                 // Buraya "Götür" butonuna basıldığında yapılacak işlem eklenir.
               },
               style: ElevatedButton.styleFrom(

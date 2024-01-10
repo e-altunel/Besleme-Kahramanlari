@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:beslemekahramanlari/API/api.dart";
+import "package:beslemekahramanlari/pages/previewPage.dart";
 
 class mapPage extends StatefulWidget {
   const mapPage({super.key}); 
@@ -40,10 +41,14 @@ class _mapPageState extends State<mapPage>{
     Future<void> openCamera() async {
       pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
-        // Do something with the picked image file
-        print("Image picked");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => previewPage(imageFile: File(pickedFile!.path), currentP: _currentP),
+          ),
+        );
       }
-  }
+    }
 
   Future<void> addCustomIcon() async {
     markerIcon = await BitmapDescriptor.fromAssetImage(
