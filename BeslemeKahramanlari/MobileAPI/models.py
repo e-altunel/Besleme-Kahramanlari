@@ -104,7 +104,10 @@ class FeedPoint(models.Model):
         self.should_update = False
         self.calculate_food_amount()
         self.calculate_food_avarage_amount()
-        self.food_level = 2.5 * self.food_amount / self.food_avarage_amount
+        if self.food_avarage_amount == 0:
+            self.food_level = 2.5
+        else:
+            self.food_level = 2.5 * self.food_amount / self.food_avarage_amount
         if self.food_level > 5:
             self.food_level = 5
         elif self.food_level < 0:
