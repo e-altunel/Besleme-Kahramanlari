@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
-import 'dart:html' as html;
 import 'package:http/http.dart' as http;
 import "package:beslemekahramanlari/API/api.dart";
 import "package:beslemekahramanlari/components/userInfo.dart";
 import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:beslemekahramanlari/pages/homePage.dart';
 
 class LocationC {
   final String name;
@@ -25,7 +25,6 @@ class previewPage extends StatefulWidget {
 
 class _previewPageState extends State<previewPage> {
   DateTime now = DateTime.now();
-  int currentPage = 0;
   LatLng? currentP;
   String feed = '0';
   final _textcontroller = TextEditingController();
@@ -37,7 +36,7 @@ class _previewPageState extends State<previewPage> {
   void initState() {
     super.initState();
     currentP = widget.currentP;
-    //imageData = widget.imageFile.readAsBytesSync();
+    imageData = widget.imageFile.readAsBytesSync();
     fetchLocations(); // Fetch locations when the widget is initialized
   }
 
@@ -85,8 +84,13 @@ class _previewPageState extends State<previewPage> {
                 left: 0,
                 child:
                 IconButton(
-                  onPressed: (){} ,
-                  icon: Image.asset("lib/images/back_icon.png", width: 150, height: 50,),
+                onPressed: () async {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                  );
+                },
+                  icon: Image.asset("lib/images/back_icon.png", width: 100, height: 50,),
                 ),
               ),
               const Positioned(
@@ -118,23 +122,28 @@ class _previewPageState extends State<previewPage> {
               Positioned(//image will be loaded
                 top: 100,
                 left: -1,
-                child: /*Image.memory(imageData)*/ Image(
+                child: Image.memory(
+                    imageData,
+                    width: screenWidth.toDouble(),
+                    height: 300,
+
+                ), /*Image(
                       image: const AssetImage("lib/images/beslemekahramanlarilogo.png"),
                       width: screenWidth.toDouble(),
                       height: 300,
-                    ),
+                    )*/
               ),   
 
               const Positioned(
                 top: 400,
                 left: -1,
                 child:
-                  Text("Select Location: ",style: TextStyle(fontSize: 25, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
+                  Text("Select Location: ",style: TextStyle(fontSize: 20, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
               ),     
 
               Positioned(
-                top: 400,
-                left: 200,
+                top: 390,
+                left: 160,
                 child:
                   //Text("Location: GTU",style: TextStyle(fontSize: 25, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
                   DropdownButton<LocationC>(
@@ -156,13 +165,13 @@ class _previewPageState extends State<previewPage> {
                 top: 400,
                 right: -1,
                 child:
-                  Text("${now.day}.${now.month}.${now.year}",style: TextStyle(fontSize: 25, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
+                  Text("${now.day}.${now.month}.${now.year}",style: TextStyle(fontSize: 20, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
               ),
               Positioned(
                 top: 425,
                 right: -1,
                 child:
-                  Text("${now.hour}.${now.minute}",style: TextStyle(fontSize: 25, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
+                  Text("${now.hour}.${now.minute}",style: TextStyle(fontSize: 20, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
               ),
               Padding(
                 padding: const EdgeInsets.all(60.0),
@@ -205,63 +214,40 @@ class _previewPageState extends State<previewPage> {
                           ),
                           child: Text("Share!"),
                           onPressed: ()async{
+                            final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
                             feed = _textcontroller.text;
                             print("button pressed: ");
                             print(feed);
                             if (selectedLocation != null) {
-                              print("Selected Location: ${selectedLocation!.name}");
                               var request = http.MultipartRequest('POST', Uri.parse(url + 'share-post/'));
-                              request.files.add(http.MultipartFile.fromBytes('image', await widget.imageFile.readAsBytes()));
+                              request.files.add(await http.MultipartFile.fromPath('image', await widget.imageFile.path));
                               final headers = {
-                                HttpHeaders.authorizationHeader : 'Token ' + UserInfo.token, // user-info token
+                                HttpHeaders.authorizationHeader: 'Token ' + UserInfo.token,
                                 HttpHeaders.contentTypeHeader: "application/json"
                               };
-                              request.headers.addEntries(headers.entries);
-                              final fields = <String, String>{
-                                "feed_point": selectedLocation!.id.toString(),
-                                "food_amount": feed
-                              };
-                              request.fields.addEntries(fields.entries);
+                              request.headers.addAll(headers);
+
+                              // Replace 'your_user_value' with the actual value you want to send
+                              request.fields['feed_point'] = selectedLocation!.id.toString();
+                              request.fields['food_amount'] = feed;
+
                               var response = await request.send();
-                              print(response);
-                              // Perform your actions here when a location is selected
-/*
-                              List<int> imageBytes = widget.imageFile.readAsBytesSync();
-                              Map<String, dynamic> requestData = {
-                                "post": base64Encode(imageBytes),
-                                "feed_point": selectedLocation!.id,
-                                "food_amount ": feed,
-                              };
-                              try{
-                                var responses = await http.post(
-                                  Uri.parse(url + "share-post/"),
-                                  headers: {
-                                    HttpHeaders.authorizationHeader: UserInfo.token,
-                                    HttpHeaders.contentTypeHeader: "application/json",
-                                  },
-                                  body: jsonEncode(requestData),
-                                );
-                              }
-                              catch(error){}*/
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Your photo has been shared.'),
+                                ),
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => MyHomePage()),
+                              );
                             }
                             else {
                               // Display a message or take appropriate action when no location is selected
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Location Not Selected'),
-                                    content: Text('Please select a location before sharing.'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(); // Close the dialog
-                                        },
-                                        child: Text('OK'),
-                                      ),
-                                    ],
-                                  );
-                                },
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please select a location before sharing.'),
+                                ),
                               );
                             }
                           },
@@ -281,54 +267,6 @@ class _previewPageState extends State<previewPage> {
             backgroundImage: AssetImage(
                 "lib/images/beslemekahramanlarilogo.png"), // Resim dosyanızın yolunu belirtin
           ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          children: [
-            const Spacer(),
-            IconButton(
-                onPressed: () {
-                  setState(
-                    () {
-                      currentPage = 0;
-                    },
-                  );
-                },
-                icon: Icon(Icons.maps_home_work_sharp,
-                    color: currentPage == 0
-                        ? const Color.fromARGB(255, 245, 59, 2)
-                        : const Color.fromARGB(255, 0, 0, 0))),
-            const Spacer(),
-            IconButton(
-                onPressed: () {
-                  setState(
-                    () {
-                      currentPage = 1;
-                    },
-                  );
-                },
-                icon: Icon(Icons.location_pin,
-                    color: currentPage == 1
-                        ? const Color.fromARGB(255, 245, 59, 2)
-                        : const Color.fromARGB(255, 0, 0, 0))),
-            const Spacer(),
-            IconButton(
-                onPressed: () {
-                  setState(
-                    () {
-                      currentPage = 2;
-                    },
-                  );
-                },
-                icon: Icon(
-                  Icons.search,
-                  color: currentPage == 2
-                      ? const Color.fromARGB(255, 245, 59, 2)
-                      : const Color.fromARGB(255, 0, 0, 0),
-                )),
-            const Spacer(),
-          ],
         ),
       ),
     );
