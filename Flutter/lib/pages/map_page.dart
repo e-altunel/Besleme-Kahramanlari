@@ -1,6 +1,6 @@
 //import 'dart:html';
 import 'dart:io';
-
+import 'dart:async'; // Import Timer
 import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,6 +9,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import "package:beslemekahramanlari/components/userInfo.dart";
 import "package:beslemekahramanlari/API/api.dart";
+import "package:beslemekahramanlari/pages/previewPage.dart";
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 
 class mapPage extends StatefulWidget {
   const mapPage({super.key}); 
@@ -18,7 +22,6 @@ class mapPage extends StatefulWidget {
 class _mapPageState extends State<mapPage>{
   int currentPage = 0;
   static const LatLng _pGooglePlex = LatLng(40.823099, 29.347767);
-  static const LatLng _pApplePark = LatLng(37.3346, -122.0090);
   BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
   Location _locationController = new Location();
   LatLng? _currentP = null;
@@ -32,28 +35,43 @@ class _mapPageState extends State<mapPage>{
     getmarkers(markerIcon);
     });
     getlocationupdates();
+    Timer.periodic(Duration(seconds: 10), (timer) {
+      getmarkers(markerIcon);
+    });
   }
 
     Future<void> openCamera() async {
       pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
-        // Do something with the picked image file
-        print("Image picked");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => previewPage(imageFile: File(pickedFile!.path), currentP: _currentP),
+          ),
+        );
       }
-  }
+    }
 
   Future<void> addCustomIcon() async {
-    markerIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(40, 40)),
-      "lib/images/loca.png",
-    );
+    ByteData data = await rootBundle.load("lib/images/loca.png");
+    Uint8List bytes = data.buffer.asUint8List();
+
+    // Use the image package to resize the image
+    img.Image image = img.decodeImage(Uint8List.fromList(bytes))!;
+    img.Image resizedImage = img.copyResize(image, width: 135, height: 135);
+
+    // Convert the resized image back to Uint8List
+    Uint8List resizedBytes = Uint8List.fromList(img.encodePng(resizedImage));
+
+    markerIcon = await BitmapDescriptor.fromBytes(resizedBytes);
+
     // Ensure that markerIcon is not null before proceeding
     if (markerIcon != null) {
       setState(() {
         // Update the state only if the markerIcon is successfully loaded
         markerIcon = markerIcon;
       });
-    } 
+    }
   }
 
   Future<void> getlocationupdates() async{
@@ -83,6 +101,7 @@ class _mapPageState extends State<mapPage>{
   }
 
   void getmarkers(BitmapDescriptor markericon) async {
+    markersList.clear();
     var response = await http.post(
       Uri.parse(url + "get-feed-points/"),
       headers: {
@@ -110,6 +129,7 @@ class _mapPageState extends State<mapPage>{
           ),
         );
       }
+      setState(() {});
     }
   }
 
