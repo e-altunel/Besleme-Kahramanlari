@@ -1,0 +1,9 @@
+__pycache__
+.venv
+.vscode
+.coverage
+htmlcov
+.deployment
+Dockerfile
+nohup.out
+run.bash
