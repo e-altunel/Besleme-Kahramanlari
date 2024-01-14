@@ -91,4 +91,19 @@ class Backend {
     );
     return response;
   }
+
+  static Future<http.Response> changePassword(
+      String oldPassword, String newPassword) {
+    return http.post(
+      Uri.parse(url + "change-password/"),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + UserInfo.token, // Eğer gerekliyse
+      },
+      body: jsonEncode(<String, String>{
+        'old_password': oldPassword,
+        'new_password': newPassword,
+      }),
+    );
+  }
 }

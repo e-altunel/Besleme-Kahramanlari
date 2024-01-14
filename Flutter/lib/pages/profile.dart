@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:beslemekahramanlari/components/userInfo.dart';
+import 'package:http/http.dart' as http;
+import 'package:beslemekahramanlari/API/api.dart';
+import 'dart:convert';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key});
@@ -11,6 +14,99 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmNewPasswordController =
+      TextEditingController();
+
+  void _changePassword() async {
+    if (_newPasswordController.text == _confirmNewPasswordController.text) {
+      http.Response response = await Backend.changePassword(
+        _oldPasswordController.text,
+        _newPasswordController.text,
+      );
+
+      Navigator.pop(context); // Close the modal bottom sheet first
+
+      if (response.statusCode == 200) {
+        // Password change is successful
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Password successfully changed"),
+            backgroundColor: Color.fromARGB(255, 3, 255, 3),
+          ),
+        );
+      } else {
+        // Handle error responses
+        var responseData = json.decode(response.body);
+        if (responseData['error'] == 'Old Password is wrong') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Old Password is incorrect"),
+            ),
+          );
+        }
+        if (responseData['error'] == 'Old and New Passwords are same') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Old and New Passwords are same"),
+            ),
+          );
+        } else {
+          // Handle other types of errors
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("An error occurred"),
+            ),
+          );
+        }
+      }
+    } else {
+      Navigator.pop(context); // Close the modal bottom sheet first
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("New Password and Confirmation Password do not match"),
+        ),
+      );
+    }
+  }
+
+  void _showChangePasswordModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: _oldPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "Current Password"),
+              ),
+              TextField(
+                controller: _newPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "New Password"),
+              ),
+              TextField(
+                controller: _confirmNewPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "Confirm New Password"),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                child: Text("Change Password"),
+                onPressed: _changePassword,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,9 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Icons.account_circle,
               color: Colors.red[1000],
             ),
-            onPressed: () {
-              // Profil ikonuna tıklanınca yapılacak işlemler
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -66,22 +160,18 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 SizedBox(height: 25),
                 Center(
-                  child: CircleAvatar(
-                    radius: 70,
-                    backgroundImage: AssetImage('assets/pp.jpg'),
+                  child: Text(
+                    '#' + UserInfo.username,
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SizedBox(height: 16),
                 Row(
                   children: [
                     SizedBox(width: 8),
-                    Text(
-                      '          #' + UserInfo.username,
-                      style: TextStyle(
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                   ],
                 ),
                 SizedBox(height: 90),
@@ -126,18 +216,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ],
                 ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: ElevatedButton(
+                      child: Text("Change Password"),
+                      onPressed: () => _showChangePasswordModal(context),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Edit butonuna basıldığında bir şey yapma
-        },
-        child: Icon(Icons.edit, color: Colors.red),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }
