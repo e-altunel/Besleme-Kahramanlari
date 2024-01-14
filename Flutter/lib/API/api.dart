@@ -80,4 +80,15 @@ class Backend {
           "longitude": longitude,
         }));
   }
+
+  static Future<http.Response> getFeedPoint(int feedPointId) async {
+    var response = await http.get(
+      Uri.parse(url + "get-feed-point/" + feedPointId.toString() + "/"),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + UserInfo.token,
+      },
+    );
+    return response;
+  }
 }
