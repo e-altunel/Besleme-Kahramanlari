@@ -41,7 +41,7 @@
 								</a>
 								{% if request.user.is_superuser %} 
 									{% if user.is_staff %}
-										<a href="{% url 'users_unstaff' user.id %}" class="btn btn-danger">
+										<a href="{% url 'users_unstaff' user.id %}" class="btn btn-warning">
 											Fire
 										</a>
 									{% else %}
@@ -55,6 +55,11 @@
 									Unban
 								</a>
 							{% endif %} 
+                            {% if request.user.is_superuser %}
+                                <a href="{% url 'users_delete' user.id %}" class="btn btn-danger">
+                                    Delete
+                                </a>
+                            {% endif %}
 							
 						</div>
 					{% endif %}

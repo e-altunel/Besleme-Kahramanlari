@@ -323,6 +323,26 @@ def users_unstaff(request, id):
     messages.success(request, "User is not staff anymore")
     return redirect("users")
 
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def users_delete(request, id):
+    if not request.user.is_superuser:
+        messages.error(request, "You don't have permission to do that")
+        return redirect("users")
+    if request.user.id == id:
+        messages.error(request, "You can't delete yourself")
+        return redirect("users")
+    try:
+        user = BeslemeKahramani.objects.get(id=id)
+    except BeslemeKahramani.DoesNotExist:
+        messages.error(request, "User not found")
+        return redirect("users")
+    if user.is_superuser:
+        messages.error(request, "You can't delete superuser")
+        return redirect("users")
+    user.delete()
+    messages.success(request, "User is deleted successfully")
+    return redirect("users")
 
 # endregion
 # region Reports Views
@@ -392,7 +412,7 @@ def reports_delete(request, id):
 @user_passes_test(lambda u: u.is_staff)
 @login_required
 def posts(request):
-	posts = Post.objects.all().filter()
+	posts = Post.objects.all().order_by('-created_at')
 	return render(request, 'AdminPanel/posts.html', {"table_data": posts})
 
 
@@ -441,6 +461,18 @@ def posts_unhide(request, id):
 	post.save()
 	messages.success(request, "Post is unhidden now")
 	return redirect('posts')
+
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
+def posts_delete(request, id):
+    try:
+        post = Post.objects.get(id=id)
+    except Post.DoesNotExist:
+        messages.error(request, "Post not found")
+        return redirect('posts')
+    post.delete()
+    messages.success(request, "Post is deleted successfully")
+    return redirect('posts')
 
 # endregion
 # endregion

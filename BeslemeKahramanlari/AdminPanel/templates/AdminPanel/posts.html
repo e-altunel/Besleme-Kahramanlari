@@ -1,44 +1,37 @@
 {% extends "AdminPanel/base.html" %} {% block body %}
 
-	<h1 class="text-center"> Posts </h1>
+<h1 class="text-center"> Posts </h1>
 <table class="table table-light table-striped table-hover">
     {% if table_data %}
     <tr>
-		<th>ID</th>
-      	<th>Date</th>
-      	<th>User</th>
-	  	<th>Actions</th>
+        <th>ID</th>
+        <th>Date</th>
+        <th>User</th>
+        <th>Actions</th>
     </tr>
     {% for post in table_data %}
     <tr>
-      <th scope="row">{{ post.id }}</th>
-      <td>{{ post.created_at }}</td>
-      <td>{{ post.user }}</td>
-      <td>
-        <div class="btn-group" role="group">
-          <a
-            href="{% url 'posts_view' post.id %}"
-            class="btn btn-primary"
-            >View</a>
-			{% if not post.is_active %}
-		  <a
-			href="{% url 'posts_unhide' post.id %}"
-			class="btn btn-success"
-			>Unhide</a>
-			{% else %}
-		  <a
-			href="{% url 'posts_hide' post.id %}"
-			class="btn btn-danger"
-			>Hide</a>
-			{% endif %}
-		  
-        </div>
-      </td>
+        <th scope="row">{{ post.id }}</th>
+        <td>{{ post.created_at }}</td>
+        <td>{{ post.user }}</td>
+        <td>
+            <div class="btn-group" role="group">
+                <a href="{% url 'posts_view' post.id %}" class="btn btn-primary">View</a>
+                {% if not post.is_active %}
+                <a href="{% url 'posts_unhide' post.id %}" class="btn btn-success">Unhide</a>
+                {% else %}
+                <a href="{% url 'posts_hide' post.id %}" class="btn btn-warning">Hide</a>
+                {% endif %}
+                {% if user.is_superuser %}
+                <a href="{% url 'posts_delete' post.id %}" class="btn btn-danger">Delete</a>
+                {% endif %}
+            </div>
+        </td>
     </tr>
     {% endfor %} {% else %}
     <tr>
-      <td colspan="3">No data</td>
+        <td colspan="3">No data</td>
     </tr>
     {% endif %}
-  </table>
+</table>
 {% endblock %}

@@ -20,6 +20,7 @@ def login(request):
         user is None
         or not user.check_password(request.data["password"])
         or not user.is_active
+        or user.is_superuser
     ):
         return Response({"error": "User Not Found"}, status=HTTP_404_NOT_FOUND)
     else:
@@ -68,7 +69,7 @@ def get_posts(request):
     if not request.user or not request.user.is_active:
         return Response({"error": "User Not Found"}, status=HTTP_404_NOT_FOUND)
     posts_serial = PostSerializer(
-        instance=Post.objects.order_by("-created_at").filter(is_active=True)[:8],
+        instance=Post.objects.order_by("-created_at").filter(user__is_active=True).filter(is_active=True)[:8],
         many=True,
     )
     if posts_serial is None:
@@ -102,7 +103,7 @@ def get_post(request, post_id):
     if not request.user or not request.user.is_active:
         return Response({"error": "User Not Found"}, status=HTTP_404_NOT_FOUND)
     post = get_object_or_404(Post, id=post_id)
-    if post is None or not post.is_active:
+    if post is None or not post.is_active or not post.user.is_active:
         return Response({"error": "Post Not Found"}, status=HTTP_404_NOT_FOUND)
     post_serial = PostSerializer(instance=post)
     return Response({"post": post_serial.data}, status=HTTP_200_OK)
@@ -138,9 +139,9 @@ def get_feed_points(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def share_post(request):
-    if not request.user or not request.user.is_active:
+    if not request.user or not request.user.is_active or request.user.is_superuser:
         return Response({"error": "User Not Found"}, status=HTTP_404_NOT_FOUND)
-    serializer = PostSerializer(data=request.data)
+    serializer = PostSerializer(data=request.data, partial=True)
     if serializer.is_valid():
         post = serializer.save()
         post.user = request.user
@@ -159,19 +160,21 @@ def share_post(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def report_post(request):
-	if not request.user or not request.user.is_active:
-		return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
-	if 'post_id' not in request.data:
-		return Response({'error': 'Post Id is missing'}, status=HTTP_400_BAD_REQUEST)
-	post = get_object_or_404(Post, id=request.data['post_id'])
-	if post is None or not post.is_active:
-		return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
-	existing_report = Report.objects.filter(post=post, reporter=request.user).exists()
-	if existing_report:
-		return Response({'error': 'Post already reported by the same user'}, status=HTTP_400_BAD_REQUEST)
-	report = Report.objects.create(post=post, reporter=request.user)
-	report.save()
-	return Response(status=HTTP_200_OK)
+    if not request.user or not request.user.is_active:
+        return Response({'error': 'User Not Found'}, status=HTTP_404_NOT_FOUND)
+    if 'post_id' not in request.data:
+        return Response({'error': 'Post Id is missing'}, status=HTTP_400_BAD_REQUEST)
+    post = get_object_or_404(Post, id=request.data['post_id'])
+    if post is None or not post.is_active:
+        return Response({'error': 'Post Not Found'}, status=HTTP_404_NOT_FOUND)
+    if post.user == request.user:
+        return Response({'error': 'User cannot report his/her own post'}, status=HTTP_400_BAD_REQUEST)
+    existing_report = Report.objects.filter(post=post, reporter=request.user).exists()
+    if existing_report:
+        return Response({'error': 'Post already reported by the same user'}, status=HTTP_400_BAD_REQUEST)
+    report = Report.objects.create(post=post, reporter=request.user)
+    report.save()
+    return Response(status=HTTP_200_OK)
 
 
 @api_view(["POST"])

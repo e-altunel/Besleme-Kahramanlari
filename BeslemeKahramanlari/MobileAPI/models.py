@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
 from django.core.validators import RegexValidator
+import os
 
 
 class BKManager(UserManager):
@@ -129,6 +130,12 @@ class Post(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.feed_point, self.user.username)
+    
+    def delete(self, *args, **kwargs):
+        if self.image:
+            if os.path.isfile(self.image.path):
+                os.remove(self.image.path)
+        super().delete(*args, **kwargs)
 
 
 class Report(models.Model):
