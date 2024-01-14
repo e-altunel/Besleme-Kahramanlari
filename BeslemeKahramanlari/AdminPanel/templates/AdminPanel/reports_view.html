@@ -1,0 +1,23 @@
+{% extends "AdminPanel/base.html" %}
+
+{% block body %}
+	<form method="POST">
+		{% csrf_token %}
+		<a href="{% url 'posts' %}" class="btn-close"></a>
+		<h1> View </h1>
+		<div class="mb3">
+			<label for="id_name" class="form-label"> Reporter </label>
+			<a class="form-control" href="{% url 'users_view' report.reporter.id %}"> {{ report.reporter }} </a>
+			<label for="id_name" class="form-label"> Feed Point </label>
+			<a class="form-control" href="{% url 'feed_points_edit' report.post.feed_point.id %}"> {{ report.post.feed_point }} </a>
+			<label for="id_name" class="form-label"> Post </label>
+			<a class="form-control" href="{% url 'posts_view' report.post.id %}"> {{ report.post }} </a>
+			<label for="id_name" class="form-label"> Reported User </label>
+			<a class="form-control" href="{% url 'users_view' report.post.user.id %}"> {{ report.post.user }} </a>
+			<form method="POST">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger"> Hide </button>
+			</form>
+		</div>
+	</form>
+{% endblock  %}

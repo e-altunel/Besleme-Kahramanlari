@@ -1,0 +1,17 @@
+{% extends "AdminPanel/base.html" %}
+
+{% block body %}
+	<form method="POST">
+		{% csrf_token %}
+		<a href="{% url 'feed_points' %}" class="btn-close"></a>
+		<h1> Edit Feeding Point </h1>
+		{% for field in form %}
+			<div class="mb3 {% if field.errors %} invalid {% endif %}">
+				{% if field.errors %} <div class="alert alert-danger"> {{ field.errors }} </div> {% endif %}
+				<label class="form-label" for="{{ field.id_for_label }}"> {{ field.label }} </label>
+				{{ field }}
+		{% endfor %}
+		<button type="submit" class="btn btn-primary"> Submit </button>
+		<a href="{% url 'feed_points_delete' feed_point.id %}" class="btn btn-danger"> Delete </a>
+	</form>
+{% endblock  %}
