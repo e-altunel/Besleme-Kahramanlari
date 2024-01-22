@@ -13,6 +13,7 @@ import "package:beslemekahramanlari/pages/previewPage.dart";
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
+import 'package:beslemekahramanlari/components/current_location.dart';
 
 class mapPage extends StatefulWidget {
   const mapPage({super.key}); 
@@ -35,22 +36,22 @@ class _mapPageState extends State<mapPage>{
     getmarkers(markerIcon);
     });
     getlocationupdates();
-    Timer.periodic(Duration(seconds: 10), (timer) {
+    Timer.periodic(Duration(seconds: 60), (timer) {
       getmarkers(markerIcon);
     });
   }
 
-    Future<void> openCamera() async {
-      pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (pickedFile != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => previewPage(imageFile: File(pickedFile!.path), currentP: _currentP),
-          ),
-        );
-      }
+  Future<void> openCamera() async {
+    pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => previewPage(imageFile: File(pickedFile!.path), currentP: _currentP),
+        ),
+      );
     }
+  }
 
   Future<void> addCustomIcon() async {
     ByteData data = await rootBundle.load("lib/images/loca.png");
@@ -58,7 +59,7 @@ class _mapPageState extends State<mapPage>{
 
     // Use the image package to resize the image
     img.Image image = img.decodeImage(Uint8List.fromList(bytes))!;
-    img.Image resizedImage = img.copyResize(image, width: 135, height: 135);
+    img.Image resizedImage = img.copyResize(image, width: 90, height: 90);
 
     // Convert the resized image back to Uint8List
     Uint8List resizedBytes = Uint8List.fromList(img.encodePng(resizedImage));
@@ -129,8 +130,13 @@ class _mapPageState extends State<mapPage>{
           ),
         );
       }
+      current_location.latitude = _currentP!.latitude;
+      current_location.longtitute = _currentP!.longitude;
       setState(() {});
     }
+  }
+  Future<void> _onRefresh() async {
+    getmarkers(markerIcon);
   }
 
   @override
@@ -162,6 +168,24 @@ class _mapPageState extends State<mapPage>{
               icon: Image.asset("lib/images/add_marker.png", width: 70, height: 90,),
             ),
           ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  // Call the refresh method when the button is pressed
+                  await _onRefresh();
+                },
+                icon: Icon(
+                  Icons.refresh,
+                  size: 50,
+                ),
+              ),
+            ],
+          ),
+        ),
         ]
       ),
     );

@@ -5,6 +5,7 @@ import 'package:beslemekahramanlari/components/points.dart';
 import 'package:beslemekahramanlari/API/api.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:beslemekahramanlari/components/current_location.dart';
 
 class NearestLocationsPage extends StatefulWidget {
   NearestLocationsPage({Key? key}) : super(key: key);
@@ -37,14 +38,17 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
   }
 
   Future<void> getNearestLocations() async {
-    final response = await Backend.getNearestLocations(41.0082, 28.9784);
+    final response = await Backend.getNearestLocations(current_location.latitude, current_location.longtitute);
     if (response.statusCode == 200) {
       setState(() {
         final json = jsonDecode(response.body);
         final points = json['feed_points'];
+        print("\n\n\n\n");
+        print(current_location.latitude);
+        print(current_location.longtitute);
         for (final pointdata in points) {
           Point point = Point.fromJson(pointdata);
-          point.calculateDistance(41.0082, 28.9784);
+          point.calculateDistance(current_location.latitude, current_location.longtitute);
           this.points.add(point);
         }
       });
@@ -63,7 +67,7 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
   Widget _buildLocationCard(Point point) {
     final name = point.name;
     final capacity = point.foodAmount.toString() + ' g';
-    final distance = point.distance.toString() + ' m';
+    final distance = point.distance.toString() + ' km';
     return Card(
       margin: EdgeInsets.all(8.0),
       child: Padding(
