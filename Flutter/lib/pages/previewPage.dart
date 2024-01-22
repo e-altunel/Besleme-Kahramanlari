@@ -132,18 +132,30 @@ class _previewPageState extends State<previewPage> {
                       width: screenWidth.toDouble(),
                       height: 300,
                     )*/
-              ),   
+              ),
 
-              const Positioned(
-                top: 400,
-                left: -1,
-                child:
-                  Text("Select Location: ",style: TextStyle(fontSize: 20, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
-              ),     
-
+        Positioned(
+          top: 405,
+          left: -1,
+          child: Container(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(0, 0, 0,0.5), // Set your desired background color here
+              ),
+              child: Text(
+                  "Select Location ",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Color.fromARGB(255, 255, 255, 255),),
+              ),
+          ),
+        ),
               Positioned(
-                top: 390,
+                top: 405,
                 left: 160,
+                child: Container(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(0, 0, 0,0.5), // Set your desired background color here
+                ),
                 child:
                   //Text("Location: GTU",style: TextStyle(fontSize: 25, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
                   DropdownButton<LocationC>(
@@ -161,14 +173,15 @@ class _previewPageState extends State<previewPage> {
                   },
                 ),
               ),
+              ),
               Positioned(
-                top: 400,
+                top: 500,
                 right: -1,
                 child:
                   Text("${now.day}.${now.month}.${now.year}",style: TextStyle(fontSize: 20, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
               ),
               Positioned(
-                top: 425,
+                top: 525,
                 right: -1,
                 child:
                   Text("${now.hour}.${now.minute}",style: TextStyle(fontSize: 20, color: Color.fromARGB(184, 38, 0, 255))), // color deişecek
@@ -237,6 +250,7 @@ class _previewPageState extends State<previewPage> {
                                   content: Text('Your photo has been shared.'),
                                 ),
                               );
+
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (context) => MyHomePage()),

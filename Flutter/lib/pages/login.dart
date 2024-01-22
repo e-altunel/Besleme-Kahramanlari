@@ -152,19 +152,6 @@ class _LoginPageState extends State<LoginPage> {
                     _password = value; // Store password value
                   }),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Forgot Password?",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
               MyButton(onTap: () => SignUserIn(context)),
               const SizedBox(height: 20),
               Row(
