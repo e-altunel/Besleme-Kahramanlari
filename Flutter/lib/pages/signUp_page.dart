@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:beslemekahramanlari/API/api.dart';
 import 'package:beslemekahramanlari/components/userInfo.dart';
+import 'package:beslemekahramanlari/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -103,6 +104,12 @@ class _SignUpPageState extends State<SignUpPage> {
                           duration: Duration(seconds: 3),
                           backgroundColor: Color.fromARGB(255, 76, 235, 3),
                         ),
+                      );
+                      Navigator.pop(
+                          context); // Close the current page (SignUpPage)
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     } else {
                       print("Some key is missing in the jsonResponse");

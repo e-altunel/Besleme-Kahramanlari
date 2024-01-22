@@ -28,7 +28,11 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
       appBar: AppBar(
         title: Text(
           'Nearest Locations',
-          style: TextStyle(color: Colors.red),
+          style: TextStyle(
+            fontFamily: 'LilitaOne',
+            fontSize: 25,
+            color: Colors.red,
+          ),
         ),
       ),
       body: ListView(
@@ -38,7 +42,8 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
   }
 
   Future<void> getNearestLocations() async {
-    final response = await Backend.getNearestLocations(current_location.latitude, current_location.longtitute);
+    final response = await Backend.getNearestLocations(
+        current_location.latitude, current_location.longtitute);
     if (response.statusCode == 200) {
       setState(() {
         final json = jsonDecode(response.body);
@@ -48,7 +53,8 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
         print(current_location.longtitute);
         for (final pointdata in points) {
           Point point = Point.fromJson(pointdata);
-          point.calculateDistance(current_location.latitude, current_location.longtitute);
+          point.calculateDistance(
+              current_location.latitude, current_location.longtitute);
           this.points.add(point);
         }
       });
@@ -56,7 +62,8 @@ class _NearestLocationsPageState extends State<NearestLocationsPage> {
   }
 
   Future<void> launchGoogleMaps(double latitude, double longitude) async {
-    final url = 'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude';
+    final url =
+        'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude';
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
     } else {
