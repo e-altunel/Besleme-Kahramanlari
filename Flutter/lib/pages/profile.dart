@@ -210,20 +210,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.restaurant, size: 30),
-                    SizedBox(width: 8),
-                    Text(
-                      'Total Feeding: ' +
-                          UserInfo.food_amount.toString() +
-                          ' gr.',
-                      style: TextStyle(
-                        fontSize: 30,
-                      ),
-                    ),
-                  ],
-                ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Center(
