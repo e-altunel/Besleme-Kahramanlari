@@ -5,6 +5,7 @@ import 'package:beslemekahramanlari/components/userInfo.dart';
 import 'package:http/http.dart' as http;
 import 'package:beslemekahramanlari/API/api.dart';
 import 'dart:convert';
+import 'package:beslemekahramanlari/pages/splash.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key});
@@ -192,13 +193,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Icon(Icons.mail, size: 30, color: Colors.blue),
                     SizedBox(width: 8),
-                    Text(
-                      UserInfo.email,
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.blue,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          UserInfo.email,
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.blue,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
                 SizedBox(height: 8),
@@ -223,6 +231,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Text("Change Password"),
                       onPressed: () => _showChangePasswordModal(context),
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 50, horizontal: 1),
+                  child: ElevatedButton(
+                    child: Text("Logout"),
+                    onPressed: (){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Splash(),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
